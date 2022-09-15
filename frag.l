@@ -6,7 +6,7 @@
     #include"frag.tab.h"
 %}
 %%
-[0-9]+                      {yylval.intVal=atoi(yytext); return ENT;} 
+[0-9]+                      {yylval.intVal=atoi(yytext); return ENT;} //Ceci est un test 
 [a-zA-Z0-9]+  {yylval.stringVal=strdup(yytext); return ID;}
 "=="                        {yylval.stringVal=strdup(yytext); return EQ;}
 "<"                         {yylval.stringVal=strdup(yytext);return INFS;}
