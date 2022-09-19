@@ -55,7 +55,10 @@ extern int yydebug;
     INFS = 261,
     INFE = 262,
     ET = 263,
-    OR = 264
+    OR = 264,
+    TYPE = 265,
+    IF = 266,
+    ELSE = 267
   };
 #endif
 
@@ -63,12 +66,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "frag.y"
+#line 19 "frag.y"
 
         int intVal; 
         char* stringVal; 
 
-#line 72 "frag.tab.h"
+#line 75 "frag.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
