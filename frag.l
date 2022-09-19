@@ -10,6 +10,7 @@
 "int"[" "]+                  {yylval.stringVal=strdup(yytext); return TYPE;}
 "if"                          {yylval.stringVal=strdup(yytext); return IF;}
 "else"                          {yylval.stringVal=strdup(yytext); return ELSE;}
+"while"                         {yylval.stringVal=strdup(yytext); return WHILE;}
 [a-zA-Z0-9]+  {yylval.stringVal=strdup(yytext); return ID;}
 "=="                        {yylval.stringVal=strdup(yytext); return EQ;}
 "<"                         {yylval.stringVal=strdup(yytext);return INFS;}

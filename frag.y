@@ -9,6 +9,8 @@
 %token <stringVal> TYPE
 %token <stringVal> IF
 %token <stringVal> ELSE
+%token <stringVal> WHILE
+
 %left '+' '-'
 %left '*' '/'
 
@@ -34,14 +36,27 @@ listp: %empty
      | list
      ; 
 
+
+
+listArgs: %empty 
+       | listTmp
+       ; 
+
+listTmp: TYPE ID 
+       | TYPE ID  ',' listTmp
+       ;
+
+
 instructions: %empty // Pas d'instructions 
-            | TYPE ID ';' {printf("Ceci est une declaration de la variable: %s\n",$2); }
-            | ID '=' expression';'
+            | TYPE ID '(' listArgs ')' ';' {printf("Ceci est une declaration de la fonction: %s\n",$2); }
+            | TYPE ID ';' {printf("Ceci est une declaration de la variable: %s\n",$2); }    
+            | ID '=' expression';' {printf("Affectation d'une valeur à la variable %s\n", $1);}
             | '{' instructions '}'
-            | IF '(' expression ')' '{' instructions '}'
-            | IF '(' expression ')' '{' instructions '}' ELSE '{' instructions '}'
-            | "while" '(' expression ')' '{' instructions '}'
+            | IF '(' expression ')' '{' instructions '}' {printf("if sans else\n");}
+            | IF '(' expression ')' '{' instructions '}' ELSE '{' instructions '}' {printf("if avec else et blocs d'instructions\n");}
+            | WHILE '(' expression ')' '{' instructions '}' {printf("while avec bloc d'instructions\n");}
             ;
+
  
 expression: expression expressionBis  
           | ENT                 {printf("J'ai lu %d\n",$1);}
@@ -53,7 +68,6 @@ expression: expression expressionBis
           ; 
 
 
-
 expressionBis: '+' expression
              | '-' expression
              | '*' expression
@@ -63,6 +77,10 @@ expressionBis: '+' expression
              | ET expression  {printf("J'ai lu %s\n",$1);}
              | OR expression {printf("J'ai lu %s\n",$1);}
              ;
+
+
+
+
 
 
 
