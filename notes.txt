@@ -1,0 +1,51 @@
+.)exemple: 
+x=x+1; 
+lex 
+ID '=' ID '+' ENT ; 
+Sym
+ID '=' exp ; 
+Sem 
+$$=new_tree('=', $1, $3); =
+ ..) TYPE ID ;
+ Sem 
+ + variable de contexte ajouter ID dans la table des symboles $1, $2
+
+ .:) exp => ( exp )
+ $$=$2
+
+ ::) TYPE ID (lp); 
+ ___________________ . bloc . 
+
+
+ Étape 1: Remplir la table des symboles 
+ Étape 2: Vérification dans la table de symboles de la justesse de l'appel des fonctions et de l'utilisation des variables 
+
+
+ Table des symboles: 
+
+ var 
+    u : integer ===> vérification de l'existance de u
+procedure calcul(a, b : integer) ==> vérification qu'il n'existe pas de fonction calcul 
+var 
+    u : integer
+
+
+
+/* Liste pour les délcarations de variables */ 
+listDeclarationVar: %empty 
+                  | TYPE ID ';' listDeclarationVar
+                  ;
+
+
+/* Liste pour les déclarations de fonctions */ 
+listDeclarationFunct: %empty 
+                    | TYPE ID '(' listArgs ')' ';' listDeclarationFunct
+                    ; 
+
+
+programme: listDeclarationVar listDeclarationFunct fonction
+         ; 
+
+fonction: %empty // Pas de variables locales 
+        | TYPE ID'(' listArgs ')' '{' listDeclarationVar instructions '}'  
+        ; 
