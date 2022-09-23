@@ -1,13 +1,18 @@
-int i, k, s; 
 int n; 
 int l;
-int m;
 int fonction(int l);
 int fonction2(int s, int l);
-int main(){}
 
-
-
-int tmp=base; 
-base=a; 
-base=tmp; 
+int main(){
+    int i; 
+    int y; 
+    int z;
+    if(1){
+        int locif;
+        int locif2;
+    }
+    else{
+        int m;
+    }
+    int x;
+}

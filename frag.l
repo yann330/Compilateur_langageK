@@ -11,7 +11,7 @@
 "else"                          {yylval.stringVal=strdup(yytext); return ELSE;}
 "while"                         {yylval.stringVal=strdup(yytext); return WHILE;}
 "int"[" "]                      {yylval.stringVal=strdup(yytext); return TYPE;}
-"return"                        {yylval.stringVal=strdup(yytext); return RETURN;}
+[" "]*"return "[" "]*                      {yylval.stringVal=strdup(yytext); return RETURN;}
 "main"                          {yylval.stringVal=strdup(yytext); return MAIN;}
 [" "]*","[" "]*                 {yylval.stringVal=strdup(yytext); return SEPAR;}
 [" "]*"+"[" "]*                 {yylval.stringVal=strdup(yytext); return ADD;}
