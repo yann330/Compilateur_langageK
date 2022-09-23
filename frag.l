@@ -10,8 +10,9 @@
 "if"                            {yylval.stringVal=strdup(yytext); return IF;}
 "else"                          {yylval.stringVal=strdup(yytext); return ELSE;}
 "while"                         {yylval.stringVal=strdup(yytext); return WHILE;}
-"int"[" "]                     {yylval.stringVal=strdup(yytext); return TYPE;}
+"int"[" "]                      {yylval.stringVal=strdup(yytext); return TYPE;}
 "return"                        {yylval.stringVal=strdup(yytext); return RETURN;}
+"main"                          {yylval.stringVal=strdup(yytext); return MAIN;}
 [" "]*","[" "]*                 {yylval.stringVal=strdup(yytext); return SEPAR;}
 [" "]*"+"[" "]*                 {yylval.stringVal=strdup(yytext); return ADD;}
 [" "]*"-"[" "]*                 {yylval.stringVal=strdup(yytext); return MOINS;}

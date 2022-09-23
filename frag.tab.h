@@ -71,7 +71,8 @@ extern int yydebug;
     MULT = 277,
     AFF = 278,
     NOT = 279,
-    RETURN = 280
+    RETURN = 280,
+    MAIN = 281
   };
 #endif
 
@@ -79,12 +80,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 34 "frag.y"
+#line 38 "frag.y"
 
         int intVal; 
-        char* stringVal; 
+        char* stringVal;    
 
-#line 88 "frag.tab.h"
+#line 89 "frag.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

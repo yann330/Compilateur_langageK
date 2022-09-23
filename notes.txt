@@ -49,3 +49,7 @@ programme: listDeclarationVar listDeclarationFunct fonction
 fonction: %empty // Pas de variables locales 
         | TYPE ID'(' listArgs ')' '{' listDeclarationVar instructions '}'  
         ; 
+
+
+fonction: TYPE ID LPAR listArgs RPAR ACO  instructions ACF  {printf(">Ceci est une définition de fonction de type %s et de nom %s\n",$1, $2); }
+        ; 

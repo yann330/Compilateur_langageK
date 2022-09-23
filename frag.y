@@ -16,7 +16,7 @@
 %token <stringVal> ACO
 %token <stringVal> LPAR
 %token <stringVal> RPAR
-%token <stringVal> ADD MOINS MULT AFF NOT RETURN
+%token <stringVal> ADD MOINS MULT AFF NOT RETURN MAIN
 
 
 
@@ -29,11 +29,15 @@
 // %start programme
 %{
     #include<stdio.h>
+    #include<string.h>
+    #include"tabSymb.h"
+    int adresse_glob=0;
+    int param=0;
 %}
 
 %union{
         int intVal; 
-        char* stringVal; 
+        char* stringVal;    
 }
 
 %%
@@ -54,19 +58,32 @@ listArgs: %empty
        | listTmp
        ; 
        
-listTmp: TYPE ID {printf(" J'ai lu un parametre %s\n",$2);}
-       | TYPE ID  SEPAR listTmp {printf(" J'ai lu un parametre %s\n",$2);}
+listTmp: TYPE ID {param++;}
+       | TYPE ID  SEPAR listTmp {param++;}
        ;
+
+// Liste pour un deuxième type de déclaration de variables 
+listVars: ID listBisVars  {if(existe($1)){printf("La variable %s existe deja !\nErreur\n",$1); return 0;}else{ajouterEntree($1, T_ENT, T_ENT, adresse_glob++, 0); }}
+        ; 
+listBisVars: %empty 
+       | SEPAR listVars
+       ;
+listVars: %empty
+     | list
+     ; 
 
 
 /* Liste pour les délcarations de variables */ 
-listDeclarationVar: fonction
-                  | TYPE ID PV listDeclarationVar {printf(">declaration d'une variable dont le nom est %s\n", $2);}
+listDeclarationVar: listDecFunct
+                  | TYPE ID PV listDeclarationVar {if(existe($2)){printf("La variable %s existe deja !\nErreur\n",$2); return 0;}else{ajouterEntree($2, T_ENT, T_ENT, adresse_glob++, 0); }}
+                  | TYPE listVars PV listDeclarationVar 
                   ;
 
 /* Liste pour les déclarations de fonctions */ 
-listDeclarationFunct: listDeclarationVar
-                    | TYPE ID LPAR listArgs RPAR PV listDeclarationFunct {printf(">declaration d'une fonction dont le nom est %s\n",$2);}
+listDecFunct: main
+            | listDeclarationFunct listDecFunct 
+            ;
+listDeclarationFunct: TYPE ID LPAR listArgs RPAR PV {if(existe($2)){printf("La variable %s existe deja !\nErreur\n",$2); return 0;}else{ajouterEntree($2, C_FON, T_ENT, adresse_glob++, param); }param=0;}
                     ; 
                     
 
@@ -74,7 +91,7 @@ listDeclarationFunct: listDeclarationVar
 instructions: %empty // Pas d'instructions 
             | TYPE ID PV instructions  {printf(" Ceci est une declaration de la variable: %s\n",$2); } 
             | ID LPAR listp RPAR PV instructions    {printf(" Ceci est un appel de fonction de nom: %s\n",$1); }
-            | ID AFF expression PV instructions  {printf(" Affectation d'une valeur à la variable %s\n", $1);}
+            | ID AFF expression PV instructions  { printf(" Affectation d'une valeur à la variable %s\n", $1);}
             | IF LPAR expression RPAR ACO instructions ACF {printf(" if sans else\n");}
             | IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions {printf(" if avec else et blocs d'instructions\n");}
             | RETURN expression PV
@@ -100,21 +117,13 @@ expressionBis: ADD expression
              | ET expression  {printf(" J'ai lu %s\n",$1);}
              | OR expression {printf(" J'ai lu %s\n",$1);}
              ;
-       
-fonction: TYPE ID LPAR listArgs RPAR ACO  instructions ACF  {printf(">Ceci est une définition de fonction de type %s et de nom %s\n",$1, $2); }
-        ; 
 
-programme: listDeclarationFunct   {printf("je viens de lire une programme\n"); }
+
+programme: listDeclarationVar {printf("je viens de lire une programme\n"); }
          ; 
 
-
-
-
-
-
-
-
-     
+main: TYPE MAIN LPAR RPAR ACO instructions ACF
+    ;
 
 %%
 int yyerror(void)

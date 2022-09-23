@@ -1,18 +1,13 @@
-int fonction(int l);int fonction(int l);
+int i, k, s; 
+int n; 
+int l;
+int m;
 int fonction(int l);
-int q;int q;int q;int q;int q;int q;
-int main(){
-    if(1){
-        x=x+2;
-        y=y-1;
-    }
-    else{}
-    while(2){
-        x=x+2; 
-        int x;
-    }
-    int x; 
-    int z; 
-    while(1){}
-    if(3){}
-}
+int fonction2(int s, int l);
+int main(){}
+
+
+
+int tmp=base; 
+base=a; 
+base=tmp; 
