@@ -5,7 +5,7 @@ frag.o: frag.c
 	gcc -c frag.c
 
 frag.tab.c frag.tab.h: frag.y
-	bison -d frag.y
+	bison -d frag.y --report=all
 
 frag.tab.o: frag.tab.c 
 	gcc -c frag.tab.c

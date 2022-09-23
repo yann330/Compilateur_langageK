@@ -63,7 +63,15 @@ extern int yydebug;
     SEPAR = 269,
     PV = 270,
     ACF = 271,
-    ACO = 272
+    ACO = 272,
+    LPAR = 273,
+    RPAR = 274,
+    ADD = 275,
+    MOINS = 276,
+    MULT = 277,
+    AFF = 278,
+    NOT = 279,
+    RETURN = 280
   };
 #endif
 
@@ -71,12 +79,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 28 "frag.y"
+#line 34 "frag.y"
 
         int intVal; 
         char* stringVal; 
 
-#line 80 "frag.tab.h"
+#line 88 "frag.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,0 +1,1623 @@
+Terminaux inutilisés dans la grammaire
+
+    NOT
+    '+'
+    '-'
+    '*'
+    '/'
+
+
+État 52 conflits: 8 décalage/réduction
+État 72 conflits: 8 décalage/réduction
+État 73 conflits: 8 décalage/réduction
+État 74 conflits: 8 décalage/réduction
+État 75 conflits: 8 décalage/réduction
+État 76 conflits: 8 décalage/réduction
+État 77 conflits: 8 décalage/réduction
+État 78 conflits: 8 décalage/réduction
+État 79 conflits: 8 décalage/réduction
+
+
+Grammaire
+
+    0 $accept: programme $end
+
+    1 list: expression listBis
+
+    2 listBis: %empty
+    3        | SEPAR list
+
+    4 listp: %empty
+    5      | list
+
+    6 listArgs: %empty
+    7         | listTmp
+
+    8 listTmp: TYPE ID
+    9        | TYPE ID SEPAR listTmp
+
+   10 listDeclarationVar: fonction
+   11                   | TYPE ID PV listDeclarationVar
+
+   12 listDeclarationFunct: listDeclarationVar
+   13                     | TYPE ID LPAR listArgs RPAR PV listDeclarationFunct
+
+   14 instructions: %empty
+   15             | TYPE ID PV instructions
+   16             | ID LPAR listp RPAR PV instructions
+   17             | ID AFF expression PV instructions
+   18             | IF LPAR expression RPAR ACO instructions ACF
+   19             | IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | RETURN expression PV
+   21             | WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+   22 expression: expression expressionBis
+   23           | ENT
+   24           | ID
+   25           | ID LPAR listp RPAR
+   26           | LPAR expression RPAR
+   27           | '!' expression
+
+   28 expressionBis: ADD expression
+   29              | MOINS expression
+   30              | MULT expression
+   31              | EQ expression
+   32              | INFS expression
+   33              | INFE expression
+   34              | ET expression
+   35              | OR expression
+
+   36 fonction: TYPE ID LPAR listArgs RPAR ACO instructions ACF
+
+   37 programme: listDeclarationFunct
+
+
+Terminaux, suivis des règles où ils apparaissent
+
+    $end (0) 0
+    '!' (33) 27
+    '*' (42)
+    '+' (43)
+    '-' (45)
+    '/' (47)
+    error (256)
+    ENT <intVal> (258) 23
+    ID <stringVal> (259) 8 9 11 13 15 16 17 24 25 36
+    EQ <stringVal> (260) 31
+    INFS <stringVal> (261) 32
+    INFE <stringVal> (262) 33
+    ET <stringVal> (263) 34
+    OR <stringVal> (264) 35
+    TYPE <stringVal> (265) 8 9 11 13 15 36
+    IF <stringVal> (266) 18 19
+    ELSE <stringVal> (267) 19
+    WHILE <stringVal> (268) 21
+    SEPAR <stringVal> (269) 3 9
+    PV <stringVal> (270) 11 13 15 16 17 20
+    ACF <stringVal> (271) 18 19 21 36
+    ACO <stringVal> (272) 18 19 21 36
+    LPAR <stringVal> (273) 13 16 18 19 21 25 26 36
+    RPAR <stringVal> (274) 13 16 18 19 21 25 26 36
+    ADD <stringVal> (275) 28
+    MOINS <stringVal> (276) 29
+    MULT <stringVal> (277) 30
+    AFF <stringVal> (278) 17
+    NOT <stringVal> (279)
+    RETURN <stringVal> (280) 20
+
+
+Non-terminaux, suivis des règles où ils apparaissent
+
+    $accept (31)
+        à gauche: 0
+    list (32)
+        à gauche: 1
+        à droite: 3 5
+    listBis (33)
+        à gauche: 2 3
+        à droite: 1
+    listp (34)
+        à gauche: 4 5
+        à droite: 16 25
+    listArgs (35)
+        à gauche: 6 7
+        à droite: 13 36
+    listTmp (36)
+        à gauche: 8 9
+        à droite: 7 9
+    listDeclarationVar (37)
+        à gauche: 10 11
+        à droite: 11 12
+    listDeclarationFunct (38)
+        à gauche: 12 13
+        à droite: 13 37
+    instructions (39)
+        à gauche: 14 15 16 17 18 19 20 21
+        à droite: 15 16 17 18 19 21 36
+    expression (40)
+        à gauche: 22 23 24 25 26 27
+        à droite: 1 17 18 19 20 21 22 26 27 28 29 30 31 32 33 34 35
+    expressionBis (41)
+        à gauche: 28 29 30 31 32 33 34 35
+        à droite: 22
+    fonction (42)
+        à gauche: 36
+        à droite: 10
+    programme (43)
+        à gauche: 37
+        à droite: 0
+
+
+État 0
+
+    0 $accept: . programme $end
+   10 listDeclarationVar: . fonction
+   11                   | . TYPE ID PV listDeclarationVar
+   12 listDeclarationFunct: . listDeclarationVar
+   13                     | . TYPE ID LPAR listArgs RPAR PV listDeclarationFunct
+   36 fonction: . TYPE ID LPAR listArgs RPAR ACO instructions ACF
+   37 programme: . listDeclarationFunct
+
+    TYPE  décalage et aller à l'état 1
+
+    listDeclarationVar    aller à l'état 2
+    listDeclarationFunct  aller à l'état 3
+    fonction              aller à l'état 4
+    programme             aller à l'état 5
+
+
+État 1
+
+   11 listDeclarationVar: TYPE . ID PV listDeclarationVar
+   13 listDeclarationFunct: TYPE . ID LPAR listArgs RPAR PV listDeclarationFunct
+   36 fonction: TYPE . ID LPAR listArgs RPAR ACO instructions ACF
+
+    ID  décalage et aller à l'état 6
+
+
+État 2
+
+   12 listDeclarationFunct: listDeclarationVar .
+
+    $défaut  réduction par utilisation de la règle 12 (listDeclarationFunct)
+
+
+État 3
+
+   37 programme: listDeclarationFunct .
+
+    $défaut  réduction par utilisation de la règle 37 (programme)
+
+
+État 4
+
+   10 listDeclarationVar: fonction .
+
+    $défaut  réduction par utilisation de la règle 10 (listDeclarationVar)
+
+
+État 5
+
+    0 $accept: programme . $end
+
+    $end  décalage et aller à l'état 7
+
+
+État 6
+
+   11 listDeclarationVar: TYPE ID . PV listDeclarationVar
+   13 listDeclarationFunct: TYPE ID . LPAR listArgs RPAR PV listDeclarationFunct
+   36 fonction: TYPE ID . LPAR listArgs RPAR ACO instructions ACF
+
+    PV    décalage et aller à l'état 8
+    LPAR  décalage et aller à l'état 9
+
+
+État 7
+
+    0 $accept: programme $end .
+
+    $défaut  accepter
+
+
+État 8
+
+   10 listDeclarationVar: . fonction
+   11                   | . TYPE ID PV listDeclarationVar
+   11                   | TYPE ID PV . listDeclarationVar
+   36 fonction: . TYPE ID LPAR listArgs RPAR ACO instructions ACF
+
+    TYPE  décalage et aller à l'état 10
+
+    listDeclarationVar  aller à l'état 11
+    fonction            aller à l'état 4
+
+
+État 9
+
+    6 listArgs: . %empty  [RPAR]
+    7         | . listTmp
+    8 listTmp: . TYPE ID
+    9        | . TYPE ID SEPAR listTmp
+   13 listDeclarationFunct: TYPE ID LPAR . listArgs RPAR PV listDeclarationFunct
+   36 fonction: TYPE ID LPAR . listArgs RPAR ACO instructions ACF
+
+    TYPE  décalage et aller à l'état 12
+
+    $défaut  réduction par utilisation de la règle 6 (listArgs)
+
+    listArgs  aller à l'état 13
+    listTmp   aller à l'état 14
+
+
+État 10
+
+   11 listDeclarationVar: TYPE . ID PV listDeclarationVar
+   36 fonction: TYPE . ID LPAR listArgs RPAR ACO instructions ACF
+
+    ID  décalage et aller à l'état 15
+
+
+État 11
+
+   11 listDeclarationVar: TYPE ID PV listDeclarationVar .
+
+    $défaut  réduction par utilisation de la règle 11 (listDeclarationVar)
+
+
+État 12
+
+    8 listTmp: TYPE . ID
+    9        | TYPE . ID SEPAR listTmp
+
+    ID  décalage et aller à l'état 16
+
+
+État 13
+
+   13 listDeclarationFunct: TYPE ID LPAR listArgs . RPAR PV listDeclarationFunct
+   36 fonction: TYPE ID LPAR listArgs . RPAR ACO instructions ACF
+
+    RPAR  décalage et aller à l'état 17
+
+
+État 14
+
+    7 listArgs: listTmp .
+
+    $défaut  réduction par utilisation de la règle 7 (listArgs)
+
+
+État 15
+
+   11 listDeclarationVar: TYPE ID . PV listDeclarationVar
+   36 fonction: TYPE ID . LPAR listArgs RPAR ACO instructions ACF
+
+    PV    décalage et aller à l'état 8
+    LPAR  décalage et aller à l'état 18
+
+
+État 16
+
+    8 listTmp: TYPE ID .  [RPAR]
+    9        | TYPE ID . SEPAR listTmp
+
+    SEPAR  décalage et aller à l'état 19
+
+    $défaut  réduction par utilisation de la règle 8 (listTmp)
+
+
+État 17
+
+   13 listDeclarationFunct: TYPE ID LPAR listArgs RPAR . PV listDeclarationFunct
+   36 fonction: TYPE ID LPAR listArgs RPAR . ACO instructions ACF
+
+    PV   décalage et aller à l'état 20
+    ACO  décalage et aller à l'état 21
+
+
+État 18
+
+    6 listArgs: . %empty  [RPAR]
+    7         | . listTmp
+    8 listTmp: . TYPE ID
+    9        | . TYPE ID SEPAR listTmp
+   36 fonction: TYPE ID LPAR . listArgs RPAR ACO instructions ACF
+
+    TYPE  décalage et aller à l'état 12
+
+    $défaut  réduction par utilisation de la règle 6 (listArgs)
+
+    listArgs  aller à l'état 22
+    listTmp   aller à l'état 14
+
+
+État 19
+
+    8 listTmp: . TYPE ID
+    9        | . TYPE ID SEPAR listTmp
+    9        | TYPE ID SEPAR . listTmp
+
+    TYPE  décalage et aller à l'état 12
+
+    listTmp  aller à l'état 23
+
+
+État 20
+
+   10 listDeclarationVar: . fonction
+   11                   | . TYPE ID PV listDeclarationVar
+   12 listDeclarationFunct: . listDeclarationVar
+   13                     | . TYPE ID LPAR listArgs RPAR PV listDeclarationFunct
+   13                     | TYPE ID LPAR listArgs RPAR PV . listDeclarationFunct
+   36 fonction: . TYPE ID LPAR listArgs RPAR ACO instructions ACF
+
+    TYPE  décalage et aller à l'état 1
+
+    listDeclarationVar    aller à l'état 2
+    listDeclarationFunct  aller à l'état 24
+    fonction              aller à l'état 4
+
+
+État 21
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+   36 fonction: TYPE ID LPAR listArgs RPAR ACO . instructions ACF
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 30
+
+
+État 22
+
+   36 fonction: TYPE ID LPAR listArgs . RPAR ACO instructions ACF
+
+    RPAR  décalage et aller à l'état 31
+
+
+État 23
+
+    9 listTmp: TYPE ID SEPAR listTmp .
+
+    $défaut  réduction par utilisation de la règle 9 (listTmp)
+
+
+État 24
+
+   13 listDeclarationFunct: TYPE ID LPAR listArgs RPAR PV listDeclarationFunct .
+
+    $défaut  réduction par utilisation de la règle 13 (listDeclarationFunct)
+
+
+État 25
+
+   16 instructions: ID . LPAR listp RPAR PV instructions
+   17             | ID . AFF expression PV instructions
+
+    LPAR  décalage et aller à l'état 32
+    AFF   décalage et aller à l'état 33
+
+
+État 26
+
+   15 instructions: TYPE . ID PV instructions
+
+    ID  décalage et aller à l'état 34
+
+
+État 27
+
+   18 instructions: IF . LPAR expression RPAR ACO instructions ACF
+   19             | IF . LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+
+    LPAR  décalage et aller à l'état 35
+
+
+État 28
+
+   21 instructions: WHILE . LPAR expression RPAR ACO instructions ACF instructions
+
+    LPAR  décalage et aller à l'état 36
+
+
+État 29
+
+   20 instructions: RETURN . expression PV
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 41
+
+
+État 30
+
+   36 fonction: TYPE ID LPAR listArgs RPAR ACO instructions . ACF
+
+    ACF  décalage et aller à l'état 42
+
+
+État 31
+
+   36 fonction: TYPE ID LPAR listArgs RPAR . ACO instructions ACF
+
+    ACO  décalage et aller à l'état 21
+
+
+État 32
+
+    1 list: . expression listBis
+    4 listp: . %empty  [RPAR]
+    5      | . list
+   16 instructions: ID LPAR . listp RPAR PV instructions
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    $défaut  réduction par utilisation de la règle 4 (listp)
+
+    list        aller à l'état 43
+    listp       aller à l'état 44
+    expression  aller à l'état 45
+
+
+État 33
+
+   17 instructions: ID AFF . expression PV instructions
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 46
+
+
+État 34
+
+   15 instructions: TYPE ID . PV instructions
+
+    PV  décalage et aller à l'état 47
+
+
+État 35
+
+   18 instructions: IF LPAR . expression RPAR ACO instructions ACF
+   19             | IF LPAR . expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 48
+
+
+État 36
+
+   21 instructions: WHILE LPAR . expression RPAR ACO instructions ACF instructions
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 49
+
+
+État 37
+
+   23 expression: ENT .
+
+    $défaut  réduction par utilisation de la règle 23 (expression)
+
+
+État 38
+
+   24 expression: ID .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   25           | ID . LPAR listp RPAR
+
+    LPAR  décalage et aller à l'état 50
+
+    $défaut  réduction par utilisation de la règle 24 (expression)
+
+
+État 39
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   26           | LPAR . expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 51
+
+
+État 40
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   27           | '!' . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 52
+
+
+État 41
+
+   20 instructions: RETURN expression . PV
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    PV     décalage et aller à l'état 58
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    expressionBis  aller à l'état 62
+
+
+État 42
+
+   36 fonction: TYPE ID LPAR listArgs RPAR ACO instructions ACF .
+
+    $défaut  réduction par utilisation de la règle 36 (fonction)
+
+
+État 43
+
+    5 listp: list .
+
+    $défaut  réduction par utilisation de la règle 5 (listp)
+
+
+État 44
+
+   16 instructions: ID LPAR listp . RPAR PV instructions
+
+    RPAR  décalage et aller à l'état 63
+
+
+État 45
+
+    1 list: expression . listBis
+    2 listBis: . %empty  [RPAR]
+    3        | . SEPAR list
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    SEPAR  décalage et aller à l'état 64
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    $défaut  réduction par utilisation de la règle 2 (listBis)
+
+    listBis        aller à l'état 65
+    expressionBis  aller à l'état 62
+
+
+État 46
+
+   17 instructions: ID AFF expression . PV instructions
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    PV     décalage et aller à l'état 66
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    expressionBis  aller à l'état 62
+
+
+État 47
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   15             | TYPE ID PV . instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 67
+
+
+État 48
+
+   18 instructions: IF LPAR expression . RPAR ACO instructions ACF
+   19             | IF LPAR expression . RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    RPAR   décalage et aller à l'état 68
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    expressionBis  aller à l'état 62
+
+
+État 49
+
+   21 instructions: WHILE LPAR expression . RPAR ACO instructions ACF instructions
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    RPAR   décalage et aller à l'état 69
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    expressionBis  aller à l'état 62
+
+
+État 50
+
+    1 list: . expression listBis
+    4 listp: . %empty  [RPAR]
+    5      | . list
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   25           | ID LPAR . listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    $défaut  réduction par utilisation de la règle 4 (listp)
+
+    list        aller à l'état 43
+    listp       aller à l'état 70
+    expression  aller à l'état 45
+
+
+État 51
+
+   22 expression: expression . expressionBis
+   26           | LPAR expression . RPAR
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    RPAR   décalage et aller à l'état 71
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    expressionBis  aller à l'état 62
+
+
+État 52
+
+   22 expression: expression . expressionBis
+   27           | '!' expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 27 (expression)]
+    INFS      [réduction par utilisation de la règle 27 (expression)]
+    INFE      [réduction par utilisation de la règle 27 (expression)]
+    ET        [réduction par utilisation de la règle 27 (expression)]
+    OR        [réduction par utilisation de la règle 27 (expression)]
+    ADD       [réduction par utilisation de la règle 27 (expression)]
+    MOINS     [réduction par utilisation de la règle 27 (expression)]
+    MULT      [réduction par utilisation de la règle 27 (expression)]
+    $défaut  réduction par utilisation de la règle 27 (expression)
+
+    expressionBis  aller à l'état 62
+
+
+État 53
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   31 expressionBis: EQ . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 72
+
+
+État 54
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   32 expressionBis: INFS . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 73
+
+
+État 55
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   33 expressionBis: INFE . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 74
+
+
+État 56
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   34 expressionBis: ET . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 75
+
+
+État 57
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   35 expressionBis: OR . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 76
+
+
+État 58
+
+   20 instructions: RETURN expression PV .
+
+    $défaut  réduction par utilisation de la règle 20 (instructions)
+
+
+État 59
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   28 expressionBis: ADD . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 77
+
+
+État 60
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   29 expressionBis: MOINS . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 78
+
+
+État 61
+
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+   30 expressionBis: MULT . expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    expression  aller à l'état 79
+
+
+État 62
+
+   22 expression: expression expressionBis .
+
+    $défaut  réduction par utilisation de la règle 22 (expression)
+
+
+État 63
+
+   16 instructions: ID LPAR listp RPAR . PV instructions
+
+    PV  décalage et aller à l'état 80
+
+
+État 64
+
+    1 list: . expression listBis
+    3 listBis: SEPAR . list
+   22 expression: . expression expressionBis
+   23           | . ENT
+   24           | . ID
+   25           | . ID LPAR listp RPAR
+   26           | . LPAR expression RPAR
+   27           | . '!' expression
+
+    ENT   décalage et aller à l'état 37
+    ID    décalage et aller à l'état 38
+    LPAR  décalage et aller à l'état 39
+    '!'   décalage et aller à l'état 40
+
+    list        aller à l'état 81
+    expression  aller à l'état 45
+
+
+État 65
+
+    1 list: expression listBis .
+
+    $défaut  réduction par utilisation de la règle 1 (list)
+
+
+État 66
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   17             | ID AFF expression PV . instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 82
+
+
+État 67
+
+   15 instructions: TYPE ID PV instructions .
+
+    $défaut  réduction par utilisation de la règle 15 (instructions)
+
+
+État 68
+
+   18 instructions: IF LPAR expression RPAR . ACO instructions ACF
+   19             | IF LPAR expression RPAR . ACO instructions ACF ELSE ACO instructions ACF instructions
+
+    ACO  décalage et aller à l'état 83
+
+
+État 69
+
+   21 instructions: WHILE LPAR expression RPAR . ACO instructions ACF instructions
+
+    ACO  décalage et aller à l'état 84
+
+
+État 70
+
+   25 expression: ID LPAR listp . RPAR
+
+    RPAR  décalage et aller à l'état 85
+
+
+État 71
+
+   26 expression: LPAR expression RPAR .
+
+    $défaut  réduction par utilisation de la règle 26 (expression)
+
+
+État 72
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   31              | EQ expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 31 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 31 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 31 (expressionBis)]
+    ET        [réduction par utilisation de la règle 31 (expressionBis)]
+    OR        [réduction par utilisation de la règle 31 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 31 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 31 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 31 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 31 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 73
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   32              | INFS expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 32 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 32 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 32 (expressionBis)]
+    ET        [réduction par utilisation de la règle 32 (expressionBis)]
+    OR        [réduction par utilisation de la règle 32 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 32 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 32 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 32 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 32 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 74
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   33              | INFE expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 33 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 33 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 33 (expressionBis)]
+    ET        [réduction par utilisation de la règle 33 (expressionBis)]
+    OR        [réduction par utilisation de la règle 33 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 33 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 33 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 33 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 33 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 75
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   34              | ET expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 34 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 34 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 34 (expressionBis)]
+    ET        [réduction par utilisation de la règle 34 (expressionBis)]
+    OR        [réduction par utilisation de la règle 34 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 34 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 34 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 34 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 34 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 76
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+   35              | OR expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 35 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 35 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 35 (expressionBis)]
+    ET        [réduction par utilisation de la règle 35 (expressionBis)]
+    OR        [réduction par utilisation de la règle 35 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 35 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 35 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 35 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 35 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 77
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   28              | ADD expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   29              | . MOINS expression
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 28 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 28 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 28 (expressionBis)]
+    ET        [réduction par utilisation de la règle 28 (expressionBis)]
+    OR        [réduction par utilisation de la règle 28 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 28 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 28 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 28 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 28 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 78
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   29              | MOINS expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   30              | . MULT expression
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 29 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 29 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 29 (expressionBis)]
+    ET        [réduction par utilisation de la règle 29 (expressionBis)]
+    OR        [réduction par utilisation de la règle 29 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 29 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 29 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 29 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 29 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 79
+
+   22 expression: expression . expressionBis
+   28 expressionBis: . ADD expression
+   29              | . MOINS expression
+   30              | . MULT expression
+   30              | MULT expression .  [EQ, INFS, INFE, ET, OR, SEPAR, PV, RPAR, ADD, MOINS, MULT]
+   31              | . EQ expression
+   32              | . INFS expression
+   33              | . INFE expression
+   34              | . ET expression
+   35              | . OR expression
+
+    EQ     décalage et aller à l'état 53
+    INFS   décalage et aller à l'état 54
+    INFE   décalage et aller à l'état 55
+    ET     décalage et aller à l'état 56
+    OR     décalage et aller à l'état 57
+    ADD    décalage et aller à l'état 59
+    MOINS  décalage et aller à l'état 60
+    MULT   décalage et aller à l'état 61
+
+    EQ        [réduction par utilisation de la règle 30 (expressionBis)]
+    INFS      [réduction par utilisation de la règle 30 (expressionBis)]
+    INFE      [réduction par utilisation de la règle 30 (expressionBis)]
+    ET        [réduction par utilisation de la règle 30 (expressionBis)]
+    OR        [réduction par utilisation de la règle 30 (expressionBis)]
+    ADD       [réduction par utilisation de la règle 30 (expressionBis)]
+    MOINS     [réduction par utilisation de la règle 30 (expressionBis)]
+    MULT      [réduction par utilisation de la règle 30 (expressionBis)]
+    $défaut  réduction par utilisation de la règle 30 (expressionBis)
+
+    expressionBis  aller à l'état 62
+
+
+État 80
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   16             | ID LPAR listp RPAR PV . instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 86
+
+
+État 81
+
+    3 listBis: SEPAR list .
+
+    $défaut  réduction par utilisation de la règle 3 (listBis)
+
+
+État 82
+
+   17 instructions: ID AFF expression PV instructions .
+
+    $défaut  réduction par utilisation de la règle 17 (instructions)
+
+
+État 83
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   18             | IF LPAR expression RPAR ACO . instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   19             | IF LPAR expression RPAR ACO . instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 87
+
+
+État 84
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+   21             | WHILE LPAR expression RPAR ACO . instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 88
+
+
+État 85
+
+   25 expression: ID LPAR listp RPAR .
+
+    $défaut  réduction par utilisation de la règle 25 (expression)
+
+
+État 86
+
+   16 instructions: ID LPAR listp RPAR PV instructions .
+
+    $défaut  réduction par utilisation de la règle 16 (instructions)
+
+
+État 87
+
+   18 instructions: IF LPAR expression RPAR ACO instructions . ACF
+   19             | IF LPAR expression RPAR ACO instructions . ACF ELSE ACO instructions ACF instructions
+
+    ACF  décalage et aller à l'état 89
+
+
+État 88
+
+   21 instructions: WHILE LPAR expression RPAR ACO instructions . ACF instructions
+
+    ACF  décalage et aller à l'état 90
+
+
+État 89
+
+   18 instructions: IF LPAR expression RPAR ACO instructions ACF .  [ACF]
+   19             | IF LPAR expression RPAR ACO instructions ACF . ELSE ACO instructions ACF instructions
+
+    ELSE  décalage et aller à l'état 91
+
+    $défaut  réduction par utilisation de la règle 18 (instructions)
+
+
+État 90
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+   21             | WHILE LPAR expression RPAR ACO instructions ACF . instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 92
+
+
+État 91
+
+   19 instructions: IF LPAR expression RPAR ACO instructions ACF ELSE . ACO instructions ACF instructions
+
+    ACO  décalage et aller à l'état 93
+
+
+État 92
+
+   21 instructions: WHILE LPAR expression RPAR ACO instructions ACF instructions .
+
+    $défaut  réduction par utilisation de la règle 21 (instructions)
+
+
+État 93
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   19             | IF LPAR expression RPAR ACO instructions ACF ELSE ACO . instructions ACF instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 94
+
+
+État 94
+
+   19 instructions: IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions . ACF instructions
+
+    ACF  décalage et aller à l'état 95
+
+
+État 95
+
+   14 instructions: . %empty  [ACF]
+   15             | . TYPE ID PV instructions
+   16             | . ID LPAR listp RPAR PV instructions
+   17             | . ID AFF expression PV instructions
+   18             | . IF LPAR expression RPAR ACO instructions ACF
+   19             | . IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions
+   19             | IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF . instructions
+   20             | . RETURN expression PV
+   21             | . WHILE LPAR expression RPAR ACO instructions ACF instructions
+
+    ID      décalage et aller à l'état 25
+    TYPE    décalage et aller à l'état 26
+    IF      décalage et aller à l'état 27
+    WHILE   décalage et aller à l'état 28
+    RETURN  décalage et aller à l'état 29
+
+    $défaut  réduction par utilisation de la règle 14 (instructions)
+
+    instructions  aller à l'état 96
+
+
+État 96
+
+   19 instructions: IF LPAR expression RPAR ACO instructions ACF ELSE ACO instructions ACF instructions .
+
+    $défaut  réduction par utilisation de la règle 19 (instructions)

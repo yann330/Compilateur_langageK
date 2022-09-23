@@ -1,37 +1,18 @@
-int x;
-int test(int y, int z); 
-int fonction(int y, int n);
+int fonction(int l);int fonction(int l);
+int fonction(int l);
+int q;int q;int q;int q;int q;int q;
 int main(){
-    int x;
-    int y;
-    x=2;
-    
-    if(x<2){
-        x=3;
+    if(1){
+        x=x+2;
+        y=y-1;
     }
-    else{
-        y=5;
+    else{}
+    while(2){
+        x=x+2; 
+        int x;
     }
-    while(1){
-        x=1;
-        y=y+1;
-    }
-    if(x<2){
-        x=3;
-    }
-    else{
-        y=5;
-    }
-    if(((x<2)&&(x<2))){
-        x=3;
-    }
-    else{
-        y=5;
-    }
-    if(x<2){
-        x=3;
-    }
-    else{
-        y=5;
-    }
+    int x; 
+    int z; 
+    while(1){}
+    if(3){}
 }
