@@ -480,7 +480,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  19
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   167
+#define YYLAST   166
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  32
@@ -540,11 +540,11 @@ static const yytype_int8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    46,    46,    48,    49,    52,    53,    57,    58,    61,
-      62,    66,    69,    70,    73,    74,    79,    80,    80,    81,
-      85,    86,    89,    89,    93,    96,    99,   100,   100,   101,
-     101,   102,   103,   104,   105,   108,   110,   110,   111,   111,
-     114,   114,   118,   123,   127,   130,   131,   132,   133,   134,
-     135,   138,   139,   140,   141,   142,   143,   144,   145
+      62,    66,    69,    70,    73,    74,    79,    81,    80,    91,
+      95,    96,    99,    99,   113,   116,   119,   121,   120,   140,
+     141,   141,   142,   143,   144,   147,   149,   149,   150,   150,
+     153,   153,   157,   162,   166,   169,   170,   171,   172,   173,
+     174,   177,   178,   179,   180,   181,   182,   183,   184
 };
 #endif
 
@@ -592,17 +592,17 @@ static const yytype_int16 yytoknum[] =
 static const yytype_int16 yypact[] =
 {
       -5,     9,   -59,   -59,    -3,   -59,   -59,    15,   -59,   -59,
-      -4,    28,    -9,    28,   -59,    23,    76,     2,   -59,   -59,
-      30,   -59,    26,   -59,    -1,    86,    20,   140,    -5,    28,
+      -4,    28,    -9,    28,   -59,    23,    75,     2,   -59,   -59,
+      30,   -59,    26,   -59,    -1,    85,    20,   139,    -5,    28,
       28,    28,    28,    28,    28,    28,    28,    28,   -59,   -59,
-      27,   149,   -59,    -5,   -59,    32,    37,    28,   -59,    36,
-     -59,   140,   140,   140,   140,   140,   -59,   140,   140,   140,
-     -59,   -59,   -59,    50,    41,   -59,   -59,   -59,    42,    43,
-      39,    37,   -59,   -15,    58,    45,    47,    28,    52,   -59,
-     -59,   -59,   -59,    28,    28,    56,    28,    28,    94,   -59,
-      53,   112,   -59,   117,   135,    39,    59,    39,    39,    36,
-      36,   -59,   -59,   -59,   -59,    65,    39,    39,    39,    75,
-     -59,   -59,   -59,    36,    39,   -59
+      27,   148,   -59,    -5,   -59,    32,    37,    28,   -59,    36,
+     -59,   139,   139,   139,   139,   139,   -59,   139,   139,   139,
+     -59,   -59,   -59,    50,    43,   -59,   -59,   -59,    42,    54,
+      39,    37,   -59,   -15,    61,    40,    52,    28,    56,   -59,
+     -59,   -59,   -59,    28,    28,    62,    28,    28,    93,   -59,
+      59,   111,   -59,   116,   134,    39,    70,   -59,    39,    36,
+      36,   -59,    39,    39,   -59,    74,    39,   -59,   -59,    39,
+      76,   -59,   -59,    36,    39,   -59
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -619,16 +619,16 @@ static const yytype_int8 yydefact[] =
       22,    18,    48,     0,     0,     8,    40,    44,     9,     0,
       26,     0,    23,     0,     0,     0,     0,     0,     0,    33,
       32,    34,    10,     5,     0,     0,     0,     0,     0,    41,
-       0,     0,    27,     0,     0,    26,     0,    26,    26,     0,
-       0,    42,    29,    31,    28,    36,    26,    26,    26,     0,
-      35,    30,    37,     0,    26,    39
+       0,     0,    27,     0,     0,    26,     0,    30,    26,     0,
+       0,    42,    26,    26,    28,    36,    26,    29,    31,    26,
+       0,    35,    37,     0,    26,    39
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -59,     3,   -59,     5,   -59,    18,    84,   -59,   -27,   -59,
-     106,   -59,   -59,   -59,   -59,   -28,   -59,   -59,   -59,   -59,
+     -59,     3,   -59,     4,   -59,    38,    83,   -59,   -27,   -59,
+     106,   -59,   -59,   -59,   -59,   -35,   -59,   -59,   -59,   -59,
      -59,   -59,   -58,   -59,   -59,   -59,   -59,   -11,   -59
 };
 
@@ -636,8 +636,8 @@ static const yytype_int8 yypgoto[] =
 static const yytype_int8 yydefgoto[] =
 {
       -1,    44,    38,    45,    64,    65,    15,    23,     2,    43,
-       3,     4,    46,     5,     6,    78,    98,   107,    79,    80,
-     108,   109,    67,    70,    81,     7,     8,    16,    39
+       3,     4,    46,     5,     6,    78,    98,   103,    79,    80,
+     109,   110,    67,    70,    81,     7,     8,    16,    39
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -650,18 +650,18 @@ static const yytype_int8 yytable[] =
       53,    54,    55,    14,    57,    58,    59,    11,    12,     9,
       24,     9,    24,     9,    41,    12,   -22,    56,    28,    49,
       13,   105,   106,    73,    11,    60,    11,    63,    11,    74,
-      75,    62,    76,    66,    68,   114,    71,    13,    72,    13,
-      69,    13,    85,    86,    77,    87,    88,   101,    89,   103,
-     104,    92,    96,    91,   102,    93,    94,   -38,   110,   111,
-     112,    29,    30,    31,    32,    33,   115,   113,    90,    82,
-      34,    29,    30,    31,    32,    33,    35,    36,    37,    29,
-      30,    31,    32,    33,    42,    48,    35,    36,    37,    95,
-      18,     0,     0,     0,    35,    36,    37,    29,    30,    31,
-      32,    33,    29,    30,    31,    32,    33,    97,     0,     0,
-       0,     0,    35,    36,    37,     0,    99,    35,    36,    37,
-      29,    30,    31,    32,    33,    29,    30,    31,    32,    33,
-       0,     0,     0,     0,   100,    35,    36,    37,     0,     0,
-      35,    36,    37,    20,   -12,     0,     0,    47
+      75,    62,    76,    66,    68,   114,    71,    13,    86,    13,
+     101,    13,    69,   104,    77,    85,    88,   107,   108,    72,
+      87,   111,    89,    91,   112,    93,    94,    92,    96,   115,
+      29,    30,    31,    32,    33,   102,   -38,    90,   113,    34,
+      29,    30,    31,    32,    33,    35,    36,    37,    29,    30,
+      31,    32,    33,    42,    48,    35,    36,    37,    95,    82,
+      18,     0,     0,    35,    36,    37,    29,    30,    31,    32,
+      33,    29,    30,    31,    32,    33,    97,     0,     0,     0,
+       0,    35,    36,    37,     0,    99,    35,    36,    37,    29,
+      30,    31,    32,    33,    29,    30,    31,    32,    33,     0,
+       0,     0,     0,   100,    35,    36,    37,     0,     0,    35,
+      36,    37,    20,   -12,     0,     0,    47
 };
 
 static const yytype_int8 yycheck[] =
@@ -671,18 +671,18 @@ static const yytype_int8 yycheck[] =
       31,    32,    33,    20,    35,    36,    37,    18,    26,     3,
        4,     3,     4,     3,     4,    26,    10,    34,    15,    19,
       31,    99,   100,     4,    18,    18,    18,    10,    18,    10,
-      11,    19,    13,    17,     4,   113,    14,    31,    15,    31,
-      19,    31,     4,    18,    25,    18,    77,    95,    16,    97,
-      98,    15,    19,    84,    15,    86,    87,    12,   106,   107,
-     108,     5,     6,     7,     8,     9,   114,    12,    83,    71,
-      14,     5,     6,     7,     8,     9,    20,    21,    22,     5,
-       6,     7,     8,     9,    20,    19,    20,    21,    22,    15,
-       4,    -1,    -1,    -1,    20,    21,    22,     5,     6,     7,
-       8,     9,     5,     6,     7,     8,     9,    15,    -1,    -1,
-      -1,    -1,    20,    21,    22,    -1,    19,    20,    21,    22,
-       5,     6,     7,     8,     9,     5,     6,     7,     8,     9,
-      -1,    -1,    -1,    -1,    19,    20,    21,    22,    -1,    -1,
-      20,    21,    22,    14,    15,    -1,    -1,    18
+      11,    19,    13,    17,     4,   113,    14,    31,    18,    31,
+      95,    31,    19,    98,    25,     4,    77,   102,   103,    15,
+      18,   106,    16,    84,   109,    86,    87,    15,    19,   114,
+       5,     6,     7,     8,     9,    15,    12,    83,    12,    14,
+       5,     6,     7,     8,     9,    20,    21,    22,     5,     6,
+       7,     8,     9,    20,    19,    20,    21,    22,    15,    71,
+       4,    -1,    -1,    20,    21,    22,     5,     6,     7,     8,
+       9,     5,     6,     7,     8,     9,    15,    -1,    -1,    -1,
+      -1,    20,    21,    22,    -1,    19,    20,    21,    22,     5,
+       6,     7,     8,     9,     5,     6,     7,     8,     9,    -1,
+      -1,    -1,    -1,    19,    20,    21,    22,    -1,    -1,    20,
+      21,    22,    14,    15,    -1,    -1,    18
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -699,8 +699,8 @@ static const yytype_int8 yystos[] =
       55,    14,    15,     4,    10,    11,    13,    25,    47,    50,
       51,    56,    37,    18,    23,     4,    18,    18,    59,    16,
       35,    59,    15,    59,    59,    15,    19,    15,    48,    19,
-      19,    47,    15,    47,    47,    54,    54,    49,    52,    53,
-      47,    47,    47,    12,    54,    47
+      19,    47,    15,    49,    47,    54,    54,    47,    47,    52,
+      53,    47,    47,    12,    54,    47
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -708,8 +708,8 @@ static const yytype_int8 yyr1[] =
 {
        0,    32,    33,    34,    34,    35,    35,    36,    36,    37,
       37,    38,    39,    39,    38,    38,    40,    41,    40,    40,
-      42,    42,    44,    43,    45,    46,    47,    48,    47,    49,
-      47,    47,    47,    47,    47,    50,    52,    51,    53,    51,
+      42,    42,    44,    43,    45,    46,    47,    48,    47,    47,
+      49,    47,    47,    47,    47,    50,    52,    51,    53,    51,
       55,    54,    56,    57,    58,    59,    59,    59,    59,    59,
       59,    60,    60,    60,    60,    60,    60,    60,    60
 };
@@ -719,8 +719,8 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     0,     2,     0,     1,     0,     1,     2,
        4,     2,     0,     2,     0,     1,     1,     0,     5,     4,
-       1,     2,     0,     7,     1,     1,     0,     0,     5,     0,
-       7,     5,     1,     1,     1,     6,     0,     7,     0,     9,
+       1,     2,     0,     7,     1,     1,     0,     0,     5,     6,
+       0,     6,     1,     1,     1,     6,     0,     7,     0,     9,
        0,     4,     4,     1,     5,     2,     1,     1,     4,     3,
        2,     2,     2,     2,     2,     2,     2,     2,     2
 };
@@ -1436,55 +1436,92 @@ yyreduce:
     break;
 
   case 17:
-#line 80 "frag.y"
-                               {if(existe((yyvsp[-1].stringVal))){printf("La variable %s existe deja !\nErreur\n",(yyvsp[-1].stringVal)); return 0;}else{ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_glob++, 0); }}
-#line 1442 "frag.tab.c"
+#line 81 "frag.y"
+                            {
+                                   if(existe((yyvsp[-1].stringVal))){
+                                          printf("La variable %s existe deja !\nErreur déclaration de variables\n",(yyvsp[-1].stringVal)); 
+                                          return 0;
+                                   }
+                                   else{
+                                          printf("La variable %s n'existe pas dans le contexte global, on l'ajoute!\n",(yyvsp[-1].stringVal)); 
+                                          ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_glob++, 0); 
+                                   }
+                            }
+#line 1451 "frag.tab.c"
     break;
 
   case 22:
-#line 89 "frag.y"
-                                   {if(existe((yyvsp[-1].stringVal))){printf("La variable %s existe deja !\nErreur\n",(yyvsp[-1].stringVal)); return 0;}else{ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_glob++, param); }param=0;}
-#line 1448 "frag.tab.c"
+#line 99 "frag.y"
+                                   {
+                                          if(existe((yyvsp[-1].stringVal))){
+                                                 printf("La fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions.\n",(yyvsp[-1].stringVal)); 
+                                                 return 0;
+                                          }
+                                          else{
+                                                 printf("La fonction de nom %s n'existe pas dans le contexte global, on l'ajoute!\n",(yyvsp[-1].stringVal)); 
+                                                 ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_glob++, param); 
+                                          }
+                                          param=0;
+                                   }
+#line 1467 "frag.tab.c"
     break;
 
   case 27:
-#line 100 "frag.y"
-                         {ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_loc++, 0);printf(" Ceci est une declaration de la variable: %s\n",(yyvsp[-1].stringVal));}
-#line 1454 "frag.tab.c"
+#line 121 "frag.y"
+                     {
+                            if(!existe((yyvsp[-1].stringVal))){
+                                   printf("La variable %s n'existe pas localement dans la table\n",(yyvsp[-1].stringVal));
+                                   tmp=base; 
+                                   base=0; 
+                                   if(!existe((yyvsp[-1].stringVal))){
+                                          printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",(yyvsp[-1].stringVal));
+                                          ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_loc++, 0);
+                                          base=tmp;
+                                   }else{
+                                          printf("La variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable.\n",(yyvsp[-1].stringVal));
+                                          return 0;
+                                   }
+                            }
+                            else{
+                                   printf("La variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable.\n",(yyvsp[-1].stringVal));
+                                   return 0;
+                            }
+                     }
+#line 1491 "frag.tab.c"
     break;
 
-  case 29:
-#line 101 "frag.y"
-                                    {if(!existe((yyvsp[-4].stringVal))){printf("La variable que vous voulez modifier n'est pas déclarée localement !\n");}}
-#line 1460 "frag.tab.c"
+  case 30:
+#line 141 "frag.y"
+                                   {if(!existe((yyvsp[-3].stringVal))){printf("La variable que vous voulez modifier n'est pas déclarée localement !\n"); tmp = base; base = 0; if(!existe((yyvsp[-3].stringVal))){printf("La variable que vous voulez modifier n'est pas déclarée globalement non plus !\n");base = tmp;}else{printf(">>La variable %s est declarée dans le context global\n",(yyvsp[-3].stringVal));}}}
+#line 1497 "frag.tab.c"
     break;
 
   case 36:
-#line 110 "frag.y"
+#line 149 "frag.y"
                                         {base=0; adresse_loc=tmp; }
-#line 1466 "frag.tab.c"
+#line 1503 "frag.tab.c"
     break;
 
   case 38:
-#line 111 "frag.y"
+#line 150 "frag.y"
                                         {base=0; adresse_loc=tmp; }
-#line 1472 "frag.tab.c"
+#line 1509 "frag.tab.c"
     break;
 
   case 40:
-#line 114 "frag.y"
+#line 153 "frag.y"
            {_context=C_LOC; base=sommet; tmp=adresse_loc; adresse_loc=0;}
-#line 1478 "frag.tab.c"
+#line 1515 "frag.tab.c"
     break;
 
   case 44:
-#line 127 "frag.y"
+#line 166 "frag.y"
                                {_context=C_GLO; base=0; adresse_loc=tmp; }
-#line 1484 "frag.tab.c"
+#line 1521 "frag.tab.c"
     break;
 
 
-#line 1488 "frag.tab.c"
+#line 1525 "frag.tab.c"
 
       default: break;
     }
@@ -1716,7 +1753,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 148 "frag.y"
+#line 187 "frag.y"
 
 int yyerror(void)
 { 

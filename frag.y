@@ -77,7 +77,17 @@ listVars: %empty
 
 /* Liste pour les délcarations de variables */ 
 listDeclarationVar: suiteFunct
-                  | TYPE ID PV {if(existe($2)){printf("La variable %s existe deja !\nErreur\n",$2); return 0;}else{ajouterEntree($2, _context, T_ENT, adresse_glob++, 0); }} listDeclarationVar             
+                  | TYPE ID PV 
+                            {
+                                   if(existe($2)){
+                                          printf("La variable %s existe deja !\nErreur déclaration de variables\n",$2); 
+                                          return 0;
+                                   }
+                                   else{
+                                          printf("La variable %s n'existe pas dans le contexte global, on l'ajoute!\n",$2); 
+                                          ajouterEntree($2, _context, T_ENT, adresse_glob++, 0); 
+                                   }
+                            } listDeclarationVar             
                   | TYPE listVars PV listDeclarationVar 
                   ;
 
@@ -86,7 +96,17 @@ listDecFunct: suiteMain
             | listDeclarationFunct listDecFunct 
             ;
 
-listDeclarationFunct: TYPE ID LPAR {if(existe($2)){printf("La variable %s existe deja !\nErreur\n",$2); return 0;}else{ajouterEntree($2, _context, T_ENT, adresse_glob++, param); }param=0;} listArgs RPAR PV            
+listDeclarationFunct: TYPE ID LPAR {
+                                          if(existe($2)){
+                                                 printf("La fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions.\n",$2); 
+                                                 return 0;
+                                          }
+                                          else{
+                                                 printf("La fonction de nom %s n'existe pas dans le contexte global, on l'ajoute!\n",$2); 
+                                                 ajouterEntree($2, _context, T_ENT, adresse_glob++, param); 
+                                          }
+                                          param=0;
+                                   } listArgs RPAR PV            
                     ; 
 
 /* Lien pour la suite du programme */            
@@ -97,9 +117,28 @@ suiteFunct: listDecFunct
           ; 
 
 instructions: %empty // Pas d'instructions 
-            | TYPE ID PV {ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);printf(" Ceci est une declaration de la variable: %s\n",$2);}  instructions                          
-            | ID LPAR listp RPAR PV {if(!existe($1)){printf("La variable que vous voulez modifier n'est pas déclarée localement !\n");}} instructions               
-            | ID AFF expression PV instructions                
+            | TYPE ID PV 
+                     {
+                            if(!existe($2)){
+                                   printf("La variable %s n'existe pas localement dans la table\n",$2);
+                                   tmp=base; 
+                                   base=0; 
+                                   if(!existe($2)){
+                                          printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
+                                          ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
+                                          base=tmp;
+                                   }else{
+                                          printf("La variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable.\n",$2);
+                                          return 0;
+                                   }
+                            }
+                            else{
+                                   printf("La variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable.\n",$2);
+                                   return 0;
+                            }
+                     } instructions                          
+            | ID LPAR listp RPAR PV  instructions               
+            | ID AFF expression PV {if(!existe($1)){printf("La variable que vous voulez modifier n'est pas déclarée localement !\n"); tmp = base; base = 0; if(!existe($1)){printf("La variable que vous voulez modifier n'est pas déclarée globalement non plus !\n");base = tmp;}else{printf(">>La variable %s est declarée dans le context global\n",$1);}}} instructions                
             | condition
             | while   
             | retour                  

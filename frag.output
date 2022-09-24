@@ -70,11 +70,11 @@ Grammaire
    26 $@3: %empty
 
    27 instructions: TYPE ID PV $@3 instructions
+   28             | ID LPAR listp RPAR PV instructions
 
-   28 $@4: %empty
+   29 $@4: %empty
 
-   29 instructions: ID LPAR listp RPAR PV $@4 instructions
-   30             | ID AFF expression PV instructions
+   30 instructions: ID AFF expression PV $@4 instructions
    31             | condition
    32             | while
    33             | retour
@@ -126,7 +126,7 @@ Terminaux, suivis des règles où ils apparaissent
     '/' (47)
     error (256)
     ENT <intVal> (258) 45
-    ID <stringVal> (259) 8 9 10 17 22 27 29 30 46 47
+    ID <stringVal> (259) 8 9 10 17 22 27 28 30 46 47
     EQ <stringVal> (260) 53
     INFS <stringVal> (261) 54
     INFE <stringVal> (262) 55
@@ -137,11 +137,11 @@ Terminaux, suivis des règles où ils apparaissent
     ELSE <stringVal> (267) 38
     WHILE <stringVal> (268) 34
     SEPAR <stringVal> (269) 3 9 12
-    PV <stringVal> (270) 17 18 22 27 29 30 41
+    PV <stringVal> (270) 17 18 22 27 28 30 41
     ACF <stringVal> (271) 40
     ACO <stringVal> (272) 40
-    LPAR <stringVal> (273) 22 29 34 36 38 43 47 48
-    RPAR <stringVal> (274) 22 29 34 36 38 43 47 48
+    LPAR <stringVal> (273) 22 28 34 36 38 43 47 48
+    RPAR <stringVal> (274) 22 28 34 36 38 43 47 48
     ADD <stringVal> (275) 50
     MOINS <stringVal> (276) 51
     MULT <stringVal> (277) 52
@@ -163,7 +163,7 @@ Non-terminaux, suivis des règles où ils apparaissent
         à droite: 1
     listp (35)
         à gauche: 4 5
-        à droite: 29 47
+        à droite: 28 47
     listArgs (36)
         à gauche: 6 7
         à droite: 22
@@ -198,14 +198,14 @@ Non-terminaux, suivis des règles où ils apparaissent
         à gauche: 24
         à droite: 15
     instructions (47)
-        à gauche: 25 27 29 30 31 32 33
-        à droite: 27 29 30 34 36 38 40 41
+        à gauche: 25 27 28 30 31 32 33
+        à droite: 27 28 30 34 36 38 40 41
     $@3 (48)
         à gauche: 26
         à droite: 27
     $@4 (49)
-        à gauche: 28
-        à droite: 29
+        à gauche: 29
+        à droite: 30
     while (50)
         à gauche: 34
         à droite: 32
@@ -1354,8 +1354,8 @@ Non-terminaux, suivis des règles où ils apparaissent
 
    25 instructions: . %empty  [ACF]
    27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
    31             | . condition
    32             | . while
    33             | . retour
@@ -1399,8 +1399,8 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 73
 
-   29 instructions: ID . LPAR listp RPAR PV $@4 instructions
-   30             | ID . AFF expression PV instructions
+   28 instructions: ID . LPAR listp RPAR PV instructions
+   30             | ID . AFF expression PV $@4 instructions
 
     LPAR  décalage et aller à l'état 83
     AFF   décalage et aller à l'état 84
@@ -1486,7 +1486,7 @@ Non-terminaux, suivis des règles où ils apparaissent
     1 list: . expression listBis
     4 listp: . %empty  [RPAR]
     5      | . list
-   29 instructions: ID LPAR . listp RPAR PV $@4 instructions
+   28 instructions: ID LPAR . listp RPAR PV instructions
    44 expression: . expression expressionBis
    45           | . ENT
    46           | . ID
@@ -1508,7 +1508,7 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 84
 
-   30 instructions: ID AFF . expression PV instructions
+   30 instructions: ID AFF . expression PV $@4 instructions
    44 expression: . expression expressionBis
    45           | . ENT
    46           | . ID
@@ -1603,14 +1603,14 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 90
 
-   29 instructions: ID LPAR listp . RPAR PV $@4 instructions
+   28 instructions: ID LPAR listp . RPAR PV instructions
 
     RPAR  décalage et aller à l'état 96
 
 
 État 91
 
-   30 instructions: ID AFF expression . PV instructions
+   30 instructions: ID AFF expression . PV $@4 instructions
    44 expression: expression . expressionBis
    50 expressionBis: . ADD expression
    51              | . MOINS expression
@@ -1701,8 +1701,8 @@ Non-terminaux, suivis des règles où ils apparaissent
 
    25 instructions: . %empty  [ACF]
    27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
    31             | . condition
    32             | . while
    33             | . retour
@@ -1728,38 +1728,19 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 96
 
-   29 instructions: ID LPAR listp RPAR . PV $@4 instructions
+   28 instructions: ID LPAR listp RPAR . PV instructions
 
     PV  décalage et aller à l'état 102
 
 
 État 97
 
-   25 instructions: . %empty  [ACF]
-   27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
-   30             | ID AFF expression PV . instructions
-   31             | . condition
-   32             | . while
-   33             | . retour
-   34 while: . WHILE LPAR expression RPAR bloc instructions
-   36 condition: . IF LPAR expression RPAR bloc $@5 instructions
-   38          | . IF LPAR expression RPAR bloc $@6 ELSE bloc instructions
-   41 retour: . RETURN expression PV instructions
+   29 $@4: . %empty
+   30 instructions: ID AFF expression PV . $@4 instructions
 
-    ID      décalage et aller à l'état 73
-    TYPE    décalage et aller à l'état 74
-    IF      décalage et aller à l'état 75
-    WHILE   décalage et aller à l'état 76
-    RETURN  décalage et aller à l'état 77
+    $défaut  réduction par utilisation de la règle 29 ($@4)
 
-    $défaut  réduction par utilisation de la règle 25 (instructions)
-
-    instructions  aller à l'état 103
-    while         aller à l'état 79
-    condition     aller à l'état 80
-    retour        aller à l'état 81
+    $@4  aller à l'état 103
 
 
 État 98
@@ -1767,8 +1748,8 @@ Non-terminaux, suivis des règles où ils apparaissent
    25 instructions: . %empty  [ACF]
    27             | . TYPE ID PV $@3 instructions
    27             | TYPE ID PV $@3 . instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
    31             | . condition
    32             | . while
    33             | . retour
@@ -1821,19 +1802,60 @@ Non-terminaux, suivis des règles où ils apparaissent
 
 État 102
 
-   28 $@4: . %empty
-   29 instructions: ID LPAR listp RPAR PV . $@4 instructions
+   25 instructions: . %empty  [ACF]
+   27             | . TYPE ID PV $@3 instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   28             | ID LPAR listp RPAR PV . instructions
+   30             | . ID AFF expression PV $@4 instructions
+   31             | . condition
+   32             | . while
+   33             | . retour
+   34 while: . WHILE LPAR expression RPAR bloc instructions
+   36 condition: . IF LPAR expression RPAR bloc $@5 instructions
+   38          | . IF LPAR expression RPAR bloc $@6 ELSE bloc instructions
+   41 retour: . RETURN expression PV instructions
 
-    $défaut  réduction par utilisation de la règle 28 ($@4)
+    ID      décalage et aller à l'état 73
+    TYPE    décalage et aller à l'état 74
+    IF      décalage et aller à l'état 75
+    WHILE   décalage et aller à l'état 76
+    RETURN  décalage et aller à l'état 77
 
-    $@4  aller à l'état 107
+    $défaut  réduction par utilisation de la règle 25 (instructions)
+
+    instructions  aller à l'état 107
+    while         aller à l'état 79
+    condition     aller à l'état 80
+    retour        aller à l'état 81
 
 
 État 103
 
-   30 instructions: ID AFF expression PV instructions .
+   25 instructions: . %empty  [ACF]
+   27             | . TYPE ID PV $@3 instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
+   30             | ID AFF expression PV $@4 . instructions
+   31             | . condition
+   32             | . while
+   33             | . retour
+   34 while: . WHILE LPAR expression RPAR bloc instructions
+   36 condition: . IF LPAR expression RPAR bloc $@5 instructions
+   38          | . IF LPAR expression RPAR bloc $@6 ELSE bloc instructions
+   41 retour: . RETURN expression PV instructions
 
-    $défaut  réduction par utilisation de la règle 30 (instructions)
+    ID      décalage et aller à l'état 73
+    TYPE    décalage et aller à l'état 74
+    IF      décalage et aller à l'état 75
+    WHILE   décalage et aller à l'état 76
+    RETURN  décalage et aller à l'état 77
+
+    $défaut  réduction par utilisation de la règle 25 (instructions)
+
+    instructions  aller à l'état 108
+    while         aller à l'état 79
+    condition     aller à l'état 80
+    retour        aller à l'état 81
 
 
 État 104
@@ -1853,50 +1875,21 @@ Non-terminaux, suivis des règles où ils apparaissent
     ELSE      réduction par utilisation de la règle 37 ($@6)
     $défaut  réduction par utilisation de la règle 35 ($@5)
 
-    $@5  aller à l'état 108
-    $@6  aller à l'état 109
+    $@5  aller à l'état 109
+    $@6  aller à l'état 110
 
 
 État 106
 
    25 instructions: . %empty  [ACF]
    27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
    31             | . condition
    32             | . while
    33             | . retour
    34 while: . WHILE LPAR expression RPAR bloc instructions
    34      | WHILE LPAR expression RPAR bloc . instructions
-   36 condition: . IF LPAR expression RPAR bloc $@5 instructions
-   38          | . IF LPAR expression RPAR bloc $@6 ELSE bloc instructions
-   41 retour: . RETURN expression PV instructions
-
-    ID      décalage et aller à l'état 73
-    TYPE    décalage et aller à l'état 74
-    IF      décalage et aller à l'état 75
-    WHILE   décalage et aller à l'état 76
-    RETURN  décalage et aller à l'état 77
-
-    $défaut  réduction par utilisation de la règle 25 (instructions)
-
-    instructions  aller à l'état 110
-    while         aller à l'état 79
-    condition     aller à l'état 80
-    retour        aller à l'état 81
-
-
-État 107
-
-   25 instructions: . %empty  [ACF]
-   27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   29             | ID LPAR listp RPAR PV $@4 . instructions
-   30             | . ID AFF expression PV instructions
-   31             | . condition
-   32             | . while
-   33             | . retour
-   34 while: . WHILE LPAR expression RPAR bloc instructions
    36 condition: . IF LPAR expression RPAR bloc $@5 instructions
    38          | . IF LPAR expression RPAR bloc $@6 ELSE bloc instructions
    41 retour: . RETURN expression PV instructions
@@ -1915,12 +1908,26 @@ Non-terminaux, suivis des règles où ils apparaissent
     retour        aller à l'état 81
 
 
+État 107
+
+   28 instructions: ID LPAR listp RPAR PV instructions .
+
+    $défaut  réduction par utilisation de la règle 28 (instructions)
+
+
 État 108
+
+   30 instructions: ID AFF expression PV $@4 instructions .
+
+    $défaut  réduction par utilisation de la règle 30 (instructions)
+
+
+État 109
 
    25 instructions: . %empty  [ACF]
    27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
    31             | . condition
    32             | . while
    33             | . retour
@@ -1944,25 +1951,18 @@ Non-terminaux, suivis des règles où ils apparaissent
     retour        aller à l'état 81
 
 
-État 109
+État 110
 
    38 condition: IF LPAR expression RPAR bloc $@6 . ELSE bloc instructions
 
     ELSE  décalage et aller à l'état 113
 
 
-État 110
+État 111
 
    34 while: WHILE LPAR expression RPAR bloc instructions .
 
     $défaut  réduction par utilisation de la règle 34 (while)
-
-
-État 111
-
-   29 instructions: ID LPAR listp RPAR PV $@4 instructions .
-
-    $défaut  réduction par utilisation de la règle 29 (instructions)
 
 
 État 112
@@ -1986,8 +1986,8 @@ Non-terminaux, suivis des règles où ils apparaissent
 
    25 instructions: . %empty  [ACF]
    27             | . TYPE ID PV $@3 instructions
-   29             | . ID LPAR listp RPAR PV $@4 instructions
-   30             | . ID AFF expression PV instructions
+   28             | . ID LPAR listp RPAR PV instructions
+   30             | . ID AFF expression PV $@4 instructions
    31             | . condition
    32             | . while
    33             | . retour
