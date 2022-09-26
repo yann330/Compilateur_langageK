@@ -4,8 +4,21 @@
     #include<stdlib.h>
     #include<string.h>
     #include"frag.tab.h"
+
+    int lineno=1;
+
+    int in(char* string, char c){
+        for(int i=0; i<strlen(string);i++){
+            if(string[i]==c){
+                return 1;
+            }
+
+        }
+        return 0;
+    }
 %}
 %%
+
 [0-9]+                          {yylval.intVal=atoi(yytext); return ENT;} //Ceci est un test[(){}] {return yytext[0];}
 "if"                            {yylval.stringVal=strdup(yytext); return IF;}
 "else"                          {yylval.stringVal=strdup(yytext); return ELSE;}
@@ -18,9 +31,9 @@
 [" "]*"-"[" "]*                 {yylval.stringVal=strdup(yytext); return MOINS;}
 [" "]*"="[" "]*                 {yylval.stringVal=strdup(yytext); return AFF;}
 [" "]*"*"[" "]*                 {yylval.stringVal=strdup(yytext); return MULT;}
-[" "\t\n]*";"[" "\t\n]*         {yylval.stringVal=strdup(yytext); return PV;}
-[" "\t\n]*"{"[" "\t\n]*         {yylval.stringVal=strdup(yytext); return ACO;}
-[" "\t\n]*"}"[" "\t\n]*         {yylval.stringVal=strdup(yytext); return ACF;}
+[" "\t\n]*";"[" "\t\n]*         {yylval.stringVal=strdup(yytext); if(in(yytext,'\n'))lineno++; return PV;}
+[" "\t\n]*"{"[" "\t\n]*         {yylval.stringVal=strdup(yytext); if(in(yytext,'\n'))lineno++; return ACO;}
+[" "\t\n]*"}"[" "\t\n]*         {yylval.stringVal=strdup(yytext); if(in(yytext,'\n'))lineno++;return ACF;}
 [a-zA-Z0-9]+                    {yylval.stringVal=strdup(yytext); return ID;}
 [" "]*"=="[" "]*                {yylval.stringVal=strdup(yytext); return EQ;}
 [" "]*"<"[" "]*                 {yylval.stringVal=strdup(yytext);return INFS;}
@@ -28,8 +41,8 @@
 [" "]*"&&"[" "]*                {yylval.stringVal=strdup(yytext);return ET;}
 [" "]*"||"[" "]*                {yylval.stringVal=strdup(yytext);return OR;}   
 [" "]*"("[" "]*                 {yylval.stringVal=strdup(yytext);return LPAR;}
-[" "]*")"[" "]*                 {yylval.stringVal=strdup(yytext);return RPAR;}
-[ \t\n]; /* ignore les blancs et tabulations */
+[" "]*")"[" "]*                 {yylval.stringVal=strdup(yytext);return RPAR;}                          
+[ \t\n] {lineno++;}/* ignore les blancs et tabulations */
 . {yylval.stringVal=strdup(yytext); return yytext[0];} /* Gérer les cas d'erreurs */
 %%
 

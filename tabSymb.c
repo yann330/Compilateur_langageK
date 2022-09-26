@@ -58,7 +58,7 @@ void afficheTSymb(void) {
   char* classe;
   char* type;
 	
-  printf("\n--- Contenu Table des Symboles : ---\n\n");
+  printf("\033[32m\n--- Contenu Table des Symboles : ---\n\n");
   for(i=base;i<sommet;i++) {
     switch(tsymb[i].classe) {
       case C_GLO: classe = "C_GLOBAL";break;
@@ -72,5 +72,5 @@ void afficheTSymb(void) {
     }
     printf("Entrée : %s (%s, %s, %d, %d)\n", tsymb[i].identif, classe, type, tsymb[i].adresse, tsymb[i].complement);
   }
-  printf("\n----------------------\n\n");
+  printf("\n----------------------\n\n\033[0m");
 }
