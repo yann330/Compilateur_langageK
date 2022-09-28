@@ -54,6 +54,7 @@ int existe_context(char* id, int contexte){
 }
 
 void afficheTSymb(void) {
+  base=0;
   int i;
   char* classe;
   char* type;

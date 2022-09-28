@@ -72,7 +72,11 @@ extern int yydebug;
     RETURN = 278,
     MAIN = 279,
     RPAR = 280,
-    LPAR = 281
+    LPAR = 281,
+    SUPS = 282,
+    SUPE = 283,
+    VOID = 284,
+    MUL = 285
   };
 #endif
 
@@ -80,12 +84,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 34 "frag.y"
+#line 54 "frag.y"
 
         int intVal; 
         char* stringVal;    
 
-#line 89 "frag.tab.h"
+#line 93 "frag.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
