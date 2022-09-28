@@ -66,7 +66,7 @@
 
 
 /* First part of user prologue.  */
-#line 31 "frag.y"
+#line 33 "frag.y"
 
        #include<stdio.h>
        #include<string.h>
@@ -89,7 +89,9 @@
               return i; 
        }
 
-#line 93 "frag.tab.c"
+     
+
+#line 95 "frag.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -163,8 +165,7 @@ extern int yydebug;
     LPAR = 281,
     SUPS = 282,
     SUPE = 283,
-    VOID = 284,
-    MUL = 285
+    VOID = 284
   };
 #endif
 
@@ -172,12 +173,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 54 "frag.y"
+#line 58 "frag.y"
 
         int intVal; 
         char* stringVal;    
 
-#line 181 "frag.tab.c"
+#line 182 "frag.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -494,21 +495,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  19
+#define YYFINAL  13
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   218
+#define YYLAST   191
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  32
+#define YYNTOKENS  31
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  41
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  76
+#define YYNRULES  75
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  149
+#define YYNSTATES  147
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   285
+#define YYMAXUTOK   284
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -523,7 +524,7 @@ static const yytype_int8 yytranslate[] =
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    31,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    30,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -548,21 +549,21 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30
+      25,    26,    27,    28,    29
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    62,    62,    62,    64,    65,    68,    69,    73,    74,
-      77,    78,    82,    83,    83,    86,   109,   109,   135,   163,
-     164,   167,   168,   173,   175,   174,   185,   189,   190,   193,
-     209,   212,   215,   216,   218,   217,   244,   243,   263,   262,
-     279,   280,   281,   284,   286,   286,   287,   287,   290,   290,
-     293,   293,   298,   303,   307,   307,   307,   310,   311,   311,
-     311,   324,   325,   326,   342,   355,   356,   359,   360,   361,
-     362,   363,   364,   365,   366,   367,   368
+       0,    66,    66,    66,    68,    69,    72,    73,    77,    78,
+      81,    82,    86,    87,    87,    90,   100,   100,   113,   113,
+     125,   126,   129,   130,   135,   137,   136,   147,   151,   152,
+     155,   173,   174,   176,   175,   187,   186,   205,   204,   219,
+     220,   221,   224,   226,   226,   227,   227,   230,   230,   233,
+     233,   238,   243,   247,   247,   247,   250,   251,   251,   251,
+     264,   265,   266,   282,   295,   296,   299,   300,   301,   302,
+     303,   304,   305,   306,   307,   308
 };
 #endif
 
@@ -574,14 +575,13 @@ static const char *const yytname[] =
   "$end", "error", "$undefined", "ENT", "ID", "EQ", "INFS", "INFE", "ET",
   "OR", "TYPE", "IF", "ELSE", "WHILE", "SEPAR", "PV", "ACF", "ACO", "ADD",
   "MOINS", "MULT", "AFF", "NOT", "RETURN", "MAIN", "RPAR", "LPAR", "SUPS",
-  "SUPE", "VOID", "MUL", "'!'", "$accept", "list", "$@1", "listBis",
-  "listp", "listArgs", "listTmp", "listArgsDef", "$@2", "listTmpDef",
-  "$@3", "listVars", "listBisVars", "listDeclarationVar", "$@4",
-  "listDecFunct", "listDeclarationFunct", "suiteMain", "suiteFunct",
-  "instructions", "$@5", "$@6", "$@7", "while", "condition", "$@8", "$@9",
-  "bloc", "$@10", "blocFunct", "$@11", "retour", "programme", "main",
-  "$@12", "$@13", "fonctions", "$@14", "$@15", "expression",
-  "expressionBis", YY_NULLPTR
+  "SUPE", "VOID", "'!'", "$accept", "list", "$@1", "listBis", "listp",
+  "listArgs", "listTmp", "listArgsDef", "$@2", "listTmpDef", "$@3",
+  "listVarsTmp", "$@4", "listBisVars", "listVars", "listDeclarationVar",
+  "$@5", "listDecFunct", "listDeclarationFunct", "instructions", "$@6",
+  "$@7", "$@8", "while", "condition", "$@9", "$@10", "bloc", "$@11",
+  "blocFunct", "$@12", "retour", "programme", "main", "$@13", "$@14",
+  "fonctions", "$@15", "$@16", "expression", "expressionBis", YY_NULLPTR
 };
 #endif
 
@@ -593,16 +593,16 @@ static const yytype_int16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,    33
+      33
 };
 # endif
 
-#define YYPACT_NINF (-78)
+#define YYPACT_NINF (-95)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-47)
+#define YYTABLE_NINF (-46)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -611,21 +611,21 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      -6,    39,   -78,   -78,    -5,   -78,   -78,     8,   -78,   -78,
-      43,   -20,    10,    10,   -78,     0,   185,     7,   -78,   -78,
-      25,   -78,     6,   -78,    20,    21,    81,   185,    -6,    10,
-      10,    10,    10,    10,    10,    10,    10,    10,    10,    41,
-     -78,    33,    57,   -78,    -6,    58,   -78,   -78,    52,    53,
-     -78,   -78,    10,   -78,   -78,   185,   185,   185,   185,   185,
-     190,   190,   185,   185,   185,    10,   -78,    38,   -78,    61,
-     -78,    64,    65,   -78,    84,   -78,   -78,   -78,   -78,    92,
-      85,   -14,    50,    71,    72,    10,    75,   -78,   -78,   -78,
-     103,   -78,    10,    10,    78,   101,    10,    10,   105,   -78,
-      91,   121,    93,   -78,    92,   137,   161,    92,   -78,   -78,
-     104,    92,   -78,    65,    65,   -78,   102,    92,   -78,   -78,
-     109,    92,   -78,    97,   124,   -78,    92,    92,   123,   -78,
-     -78,   133,   -78,   -78,   -78,    65,   130,   136,    92,   -78,
-      85,   138,   -78,    92,   -78,   124,   122,   -78,   -78
+       4,     8,   -95,   -95,     7,    35,   -95,    16,    12,   -95,
+      32,     9,   -95,   -95,   -95,     5,    34,    24,     4,    27,
+       4,    46,   -95,    33,   -95,    53,   -95,   -95,   -95,   -95,
+      47,    48,   -95,   -95,    45,    54,   -95,   -95,   -95,   -95,
+      14,    56,    15,    63,    42,    43,     0,    55,   -95,   -95,
+     -95,    68,   -95,     0,     0,    58,    59,     0,     0,   -95,
+      71,     0,     0,     1,   -95,    72,    81,   -95,    77,   158,
+     -95,    14,    86,   110,     0,   134,   158,     0,     0,     0,
+       0,     0,    14,     0,     0,     0,     0,     0,   -95,   -95,
+     -95,    65,    89,    14,   -95,    45,    45,    82,   -95,   158,
+     158,   158,   158,   158,   -95,   163,   163,   117,   158,   158,
+      83,    14,   -95,     0,   -95,   -95,    98,    14,   -95,   -95,
+      95,   111,   -95,    14,   -95,    14,   115,   -95,   -95,   127,
+     -95,   -95,   -95,    45,   116,   118,    14,   -95,    56,   120,
+     -95,    14,   -95,   111,   130,   -95,   -95
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -633,41 +633,41 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,    21,    53,    31,     0,    27,    23,     0,    30,    62,
-      63,     0,     0,     0,    22,     0,     2,     0,    28,     1,
-      21,    24,     6,    18,     0,    63,     0,    66,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     4,
-      61,     0,    63,    20,     0,     0,     8,     7,     0,     0,
-       9,    54,     6,    65,    26,    70,    71,    72,    75,    76,
-      67,    68,    69,    74,    73,     0,     3,     0,    25,    10,
-      64,     0,     0,     5,     0,    29,    48,    55,    11,    32,
-      57,     0,    21,     0,     0,     0,     0,    41,    40,    42,
-       0,    56,     0,     6,    63,     0,     0,     0,     0,    49,
-       0,     0,     0,    34,    32,     0,     0,    32,    58,    38,
-       0,    32,    33,     0,     0,    52,    13,    32,    36,    35,
-      44,    32,    12,     0,     0,    39,    32,    32,     0,    43,
-      59,     0,    14,    37,    45,     0,     0,    15,    32,    50,
-      57,     0,    47,    32,    60,     0,     0,    17,    51
+       0,    22,    52,    24,     0,     0,    28,    18,     0,    23,
+       0,     0,    29,     1,    25,     0,    20,     0,     0,     0,
+       0,     0,     8,     0,     9,    22,    19,    53,    27,    26,
+      10,     0,    18,    21,     0,     0,    30,    47,    54,    11,
+      31,    56,     0,    22,     0,     0,     0,     0,    40,    39,
+      41,     0,    55,     0,     6,    18,     0,     0,     0,    61,
+      62,     0,     0,     0,    48,     0,     0,     7,     0,     2,
+      33,    31,     0,     0,     6,     0,    65,     0,     0,     0,
+       0,     0,    31,     0,     0,     0,     0,     0,    60,    57,
+      37,     0,     4,    31,    32,     0,     0,     0,    64,    69,
+      70,    71,    74,    75,    51,    66,    67,    68,    73,    72,
+      13,    31,    35,     0,     3,    34,    43,    31,    63,    12,
+       0,     0,    38,    31,     5,    31,     0,    42,    58,     0,
+      14,    36,    44,     0,     0,    15,    31,    49,    56,     0,
+      46,    31,    59,     0,     0,    17,    50
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -78,   -19,   -78,   -78,    60,   -78,    77,   -78,   -78,     9,
-     -78,   -18,   -78,    24,   -78,   154,   -78,   -78,   -78,   -77,
-     -78,   -78,   -78,   -78,   -78,   -78,   -78,   -75,   -78,   -78,
-     -78,   -78,   -78,   -78,   -78,   -78,    19,   -78,   -78,   -12,
-     -78
+     -95,    23,   -95,   -95,    73,   -95,   113,   -95,   -95,     6,
+     -95,   -95,   -95,   -95,   -20,    25,   -95,   146,   -95,   -71,
+     -95,   -95,   -95,   -95,   -95,   -95,   -95,   -94,   -95,   -95,
+     -95,   -95,   -95,   -95,   -95,   -95,    13,   -95,   -95,    -2,
+     -95
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
-      -1,    14,    39,    66,    48,    49,    50,   123,   124,   132,
-     141,    15,    23,     2,    44,     3,     4,     5,     6,    86,
-     111,   126,   117,    87,    88,   127,   128,    77,    79,   140,
-     143,    89,     7,     8,    72,    80,    91,   116,   136,    16,
-      40
+      -1,    67,    92,   114,    68,    23,    24,   120,   121,   130,
+     139,     9,    16,    26,    10,     2,    20,     3,     4,    47,
+      93,   123,   111,    48,    49,   125,   126,    38,    40,   138,
+     141,    50,     5,     6,    34,    41,    52,   110,   134,    69,
+      88
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -675,101 +675,97 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      26,    27,    43,    47,     1,    17,    24,    92,    19,     9,
-      25,    41,    93,     9,    25,    28,    45,    55,    56,    57,
-      58,    59,    60,    61,    62,    63,    64,   112,     9,    42,
-     115,    11,    12,    47,   119,    46,    12,    13,   120,   121,
-     125,    13,     9,    10,   129,    51,    73,    52,    45,   133,
-     134,    12,    54,     9,    94,    65,    13,    20,    21,    67,
-     138,   142,    69,    11,    95,    12,   146,    46,    68,    22,
-      13,    20,   -19,    98,    47,    74,    12,    70,    71,    75,
-     101,    13,    76,    52,   105,   106,    29,    30,    31,    32,
-      33,    99,    20,   103,    45,    90,    81,    96,    97,    34,
-      35,    36,    82,    83,    52,    84,    53,   100,    37,    38,
-      29,    30,    31,    32,    33,    85,   104,   108,   110,   118,
-     107,   -46,   130,    34,    35,    36,    29,    30,    31,    32,
-      33,   122,    37,    38,   131,   135,   109,   137,   148,    34,
-      35,    36,    29,    30,    31,    32,    33,   139,    37,    38,
-     -16,    78,   145,   102,   147,    34,    35,    36,    18,   144,
-       0,     0,   113,     0,    37,    38,    29,    30,    31,    32,
-      33,     0,     0,     0,     0,     0,     0,     0,     0,    34,
-      35,    36,     0,     0,     0,     0,   114,     0,    37,    38,
-      29,    30,    31,    32,    33,    29,    30,    31,    32,    33,
-       0,     0,     0,    34,    35,    36,     0,     0,     0,     0,
-      36,     0,    37,    38,     0,     0,     0,    37,    38
+      94,   116,   117,    59,    60,    33,    77,    78,    79,    80,
+      81,   104,     7,    19,     1,    21,    82,    11,    42,    83,
+      84,    85,   115,    56,    43,    44,    61,    45,    86,    87,
+      62,    14,     8,     8,    22,    13,    53,    46,    17,   136,
+     122,    54,    15,    28,    63,    29,   127,    18,    25,    27,
+      30,    66,   131,    15,   132,    72,    73,    32,    31,    75,
+      76,    35,    37,    36,    21,   140,    51,    55,    57,    58,
+     144,    64,    65,    70,    71,    99,   100,   101,   102,   103,
+     112,   105,   106,   107,   108,   109,    77,    78,    79,    80,
+      81,    77,    78,    79,    80,    81,    90,    74,    89,    83,
+      84,    85,    91,   113,    83,    84,    85,   118,    86,    87,
+     -45,    95,   119,    86,    87,    77,    78,    79,    80,    81,
+     128,   129,    77,    78,    79,    80,    81,   133,    83,    84,
+      85,   135,   -16,   137,   143,    96,   124,    86,    87,    77,
+      78,    79,    80,    81,    86,    87,   146,    97,    39,   145,
+      12,   142,    83,    84,    85,     0,     0,     0,     0,    98,
+       0,    86,    87,    77,    78,    79,    80,    81,    77,    78,
+      79,    80,    81,     0,     0,     0,    83,    84,    85,     0,
+       0,     0,     0,    85,     0,    86,    87,     0,     0,     0,
+      86,    87
 };
 
 static const yytype_int16 yycheck[] =
 {
-      12,    13,    20,    22,    10,    10,    26,    21,     0,     3,
-       4,     4,    26,     3,     4,    15,    10,    29,    30,    31,
-      32,    33,    34,    35,    36,    37,    38,   104,     3,     4,
-     107,    24,    26,    52,   111,    29,    26,    31,   113,   114,
-     117,    31,     3,     4,   121,    25,    65,    26,    10,   126,
-     127,    26,    28,     3,     4,    14,    31,    14,    15,    26,
-     135,   138,     4,    24,    82,    26,   143,    29,    44,    26,
-      31,    14,    15,    85,    93,    14,    26,    25,    25,    15,
-      92,    31,    17,    26,    96,    97,     5,     6,     7,     8,
-       9,    16,    14,    15,    10,    10,     4,    26,    26,    18,
-      19,    20,    10,    11,    26,    13,    25,     4,    27,    28,
-       5,     6,     7,     8,     9,    23,    15,    26,    25,    15,
-      15,    12,    25,    18,    19,    20,     5,     6,     7,     8,
-       9,    29,    27,    28,    10,    12,    15,     4,    16,    18,
-      19,    20,     5,     6,     7,     8,     9,    17,    27,    28,
-      14,    74,    14,    93,   145,    18,    19,    20,     4,   140,
-      -1,    -1,    25,    -1,    27,    28,     5,     6,     7,     8,
-       9,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    18,
-      19,    20,    -1,    -1,    -1,    -1,    25,    -1,    27,    28,
-       5,     6,     7,     8,     9,     5,     6,     7,     8,     9,
-      -1,    -1,    -1,    18,    19,    20,    -1,    -1,    -1,    -1,
-      20,    -1,    27,    28,    -1,    -1,    -1,    27,    28
+      71,    95,    96,     3,     4,    25,     5,     6,     7,     8,
+       9,    82,     4,     4,    10,    10,    15,    10,     4,    18,
+      19,    20,    93,    43,    10,    11,    26,    13,    27,    28,
+      30,    15,    24,    24,    29,     0,    21,    23,    26,   133,
+     111,    26,    26,    18,    46,    20,   117,    15,    14,    25,
+       4,    53,   123,    26,   125,    57,    58,     4,    25,    61,
+      62,    14,    17,    15,    10,   136,    10,     4,    26,    26,
+     141,    16,     4,    15,    15,    77,    78,    79,    80,    81,
+      15,    83,    84,    85,    86,    87,     5,     6,     7,     8,
+       9,     5,     6,     7,     8,     9,    15,    26,    26,    18,
+      19,    20,    25,    14,    18,    19,    20,    25,    27,    28,
+      12,    25,    29,    27,    28,     5,     6,     7,     8,     9,
+      25,    10,     5,     6,     7,     8,     9,    12,    18,    19,
+      20,     4,    14,    17,    14,    25,   113,    27,    28,     5,
+       6,     7,     8,     9,    27,    28,    16,    74,    35,   143,
+       4,   138,    18,    19,    20,    -1,    -1,    -1,    -1,    25,
+      -1,    27,    28,     5,     6,     7,     8,     9,     5,     6,
+       7,     8,     9,    -1,    -1,    -1,    18,    19,    20,    -1,
+      -1,    -1,    -1,    20,    -1,    27,    28,    -1,    -1,    -1,
+      27,    28
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    10,    45,    47,    48,    49,    50,    64,    65,     3,
-       4,    24,    26,    31,    33,    43,    71,    10,    47,     0,
-      14,    15,    26,    44,    26,     4,    71,    71,    15,     5,
-       6,     7,     8,     9,    18,    19,    20,    27,    28,    34,
-      72,     4,     4,    43,    46,    10,    29,    33,    36,    37,
-      38,    25,    26,    25,    45,    71,    71,    71,    71,    71,
-      71,    71,    71,    71,    71,    14,    35,    26,    45,     4,
-      25,    25,    66,    33,    14,    15,    17,    59,    38,    60,
-      67,     4,    10,    11,    13,    23,    51,    55,    56,    63,
-      10,    68,    21,    26,     4,    43,    26,    26,    71,    16,
-       4,    71,    36,    15,    15,    71,    71,    15,    26,    15,
-      25,    52,    51,    25,    25,    51,    69,    54,    15,    51,
-      59,    59,    29,    39,    40,    51,    53,    57,    58,    51,
-      25,    10,    41,    51,    51,    12,    70,     4,    59,    17,
-      61,    42,    51,    62,    68,    14,    51,    41,    16
+       0,    10,    46,    48,    49,    63,    64,     4,    24,    42,
+      45,    10,    48,     0,    15,    26,    43,    26,    15,     4,
+      47,    10,    29,    36,    37,    14,    44,    25,    46,    46,
+       4,    25,     4,    45,    65,    14,    15,    17,    58,    37,
+      59,    66,     4,    10,    11,    13,    23,    50,    54,    55,
+      62,    10,    67,    21,    26,     4,    45,    26,    26,     3,
+       4,    26,    30,    70,    16,     4,    70,    32,    35,    70,
+      15,    15,    70,    70,    26,    70,    70,     5,     6,     7,
+       8,     9,    15,    18,    19,    20,    27,    28,    71,    26,
+      15,    25,    33,    51,    50,    25,    25,    35,    25,    70,
+      70,    70,    70,    70,    50,    70,    70,    70,    70,    70,
+      68,    53,    15,    14,    34,    50,    58,    58,    25,    29,
+      38,    39,    50,    52,    32,    56,    57,    50,    25,    10,
+      40,    50,    50,    12,    69,     4,    58,    17,    60,    41,
+      50,    61,    67,    14,    50,    40,    16
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    32,    34,    33,    35,    35,    36,    36,    37,    37,
-      38,    38,    39,    40,    39,    41,    42,    41,    43,    44,
-      44,    43,    43,    45,    46,    45,    45,    47,    47,    48,
-      49,    50,    51,    51,    52,    51,    53,    51,    54,    51,
-      51,    51,    51,    55,    57,    56,    58,    56,    60,    59,
-      62,    61,    63,    64,    66,    67,    65,    68,    69,    70,
-      68,    71,    71,    71,    71,    71,    71,    72,    72,    72,
-      72,    72,    72,    72,    72,    72,    72
+       0,    31,    33,    32,    34,    34,    35,    35,    36,    36,
+      37,    37,    38,    39,    38,    40,    41,    40,    43,    42,
+      44,    44,    45,    45,    46,    47,    46,    46,    48,    48,
+      49,    50,    50,    51,    50,    52,    50,    53,    50,    50,
+      50,    50,    54,    56,    55,    57,    55,    59,    58,    61,
+      60,    62,    63,    65,    66,    64,    67,    68,    69,    67,
+      70,    70,    70,    70,    70,    70,    71,    71,    71,    71,
+      71,    71,    71,    71,    71,    71
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     0,     3,     0,     2,     0,     1,     1,     1,
-       2,     4,     1,     0,     2,     2,     0,     5,     2,     0,
-       2,     0,     1,     1,     0,     5,     4,     1,     2,     6,
-       1,     1,     0,     4,     0,     5,     0,     7,     0,     6,
-       1,     1,     1,     6,     0,     7,     0,     9,     0,     4,
-       0,     4,     4,     1,     0,     0,     8,     0,     0,     0,
-       9,     2,     1,     1,     4,     3,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2
+       2,     4,     1,     0,     2,     2,     0,     5,     0,     3,
+       0,     2,     0,     1,     1,     0,     5,     4,     1,     2,
+       6,     0,     4,     0,     5,     0,     7,     0,     6,     1,
+       1,     1,     6,     0,     7,     0,     9,     0,     4,     0,
+       4,     4,     1,     0,     0,     8,     0,     0,     0,     9,
+       2,     1,     1,     4,     3,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2
 };
 
 
@@ -1465,117 +1461,76 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 62 "frag.y"
+#line 66 "frag.y"
                  {paramAppel++;}
-#line 1471 "frag.tab.c"
+#line 1467 "frag.tab.c"
     break;
 
   case 10:
-#line 77 "frag.y"
+#line 81 "frag.y"
                  {param++;}
-#line 1477 "frag.tab.c"
+#line 1473 "frag.tab.c"
     break;
 
   case 11:
-#line 78 "frag.y"
+#line 82 "frag.y"
                                 {param++;}
-#line 1483 "frag.tab.c"
+#line 1479 "frag.tab.c"
     break;
 
   case 13:
-#line 83 "frag.y"
+#line 87 "frag.y"
              {base=sommet;}
-#line 1489 "frag.tab.c"
+#line 1485 "frag.tab.c"
     break;
 
   case 15:
-#line 86 "frag.y"
+#line 90 "frag.y"
                     {
                             if(!existe((yyvsp[0].stringVal))){
                                    // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe((yyvsp[0].stringVal))){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          base=tmp;
-                                          ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
                                    return 0;
                             }
                      }
-#line 1517 "frag.tab.c"
+#line 1500 "frag.tab.c"
     break;
 
   case 16:
-#line 109 "frag.y"
+#line 100 "frag.y"
                      {
                             if(!existe((yyvsp[0].stringVal))){
                                    // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe((yyvsp[0].stringVal))){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          base=tmp;
-                                          ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
                                    return 0;
                             }
                      }
-#line 1545 "frag.tab.c"
+#line 1515 "frag.tab.c"
     break;
 
   case 18:
-#line 136 "frag.y"
-                     {
-                            if(!existe((yyvsp[-1].stringVal))){
+#line 113 "frag.y"
+                {
+                            if(!existe((yyvsp[0].stringVal))){
                                    // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                    
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe((yyvsp[-1].stringVal))){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_loc++, 0);
-                                          base=tmp;
-                                          
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[-1].stringVal), lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
                             }
                             else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[-1].stringVal), lineno-1);
+                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
                                    return 0;
                             }
                      }
-#line 1575 "frag.tab.c"
+#line 1530 "frag.tab.c"
     break;
 
-  case 24:
-#line 175 "frag.y"
+  case 25:
+#line 137 "frag.y"
                             {
                                    if(existe((yyvsp[-1].stringVal))){
                                           printf("\033[31mLa variable %s existe deja !\nErreur déclaration de variables ligne %d\n\033[0m",(yyvsp[-1].stringVal), lineno); 
@@ -1586,11 +1541,11 @@ yyreduce:
                                           ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_glob++, 0); 
                                    }
                             }
-#line 1590 "frag.tab.c"
+#line 1545 "frag.tab.c"
     break;
 
-  case 29:
-#line 194 "frag.y"
+  case 30:
+#line 156 "frag.y"
                                    {
                                           if(existe((yyvsp[-4].stringVal))){
                                                  printf("\033[31mLa fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions ligne %d.\n\033[0m",(yyvsp[-4].stringVal),lineno); 
@@ -1603,47 +1558,31 @@ yyreduce:
                                           param=0;
                                           
                                    }
-#line 1607 "frag.tab.c"
+#line 1562 "frag.tab.c"
     break;
 
-  case 34:
-#line 218 "frag.y"
+  case 33:
+#line 176 "frag.y"
                      {
                             if(!existe((yyvsp[-1].stringVal))){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                    
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe((yyvsp[-1].stringVal))){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_loc++, 0);
-                                          base=tmp;
-                                          
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[-1].stringVal), lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_loc++, 0);    
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[-1].stringVal), lineno-1);
                                    return 0;
                             }
+                           
                      }
-#line 1637 "frag.tab.c"
+#line 1577 "frag.tab.c"
     break;
 
-  case 36:
-#line 244 "frag.y"
+  case 35:
+#line 187 "frag.y"
                             {      
                                    tmp = base; 
                                    base = 0; 
                                    tmpSommet=sommet; 
                                    sommet=sommetGlo;
-                                   
                                    if(!existe((yyvsp[-4].stringVal))){
                                           printf("\033[31mLa fonction %s appeler n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",(yyvsp[-4].stringVal), lineno);
                                           return 0;
@@ -1656,19 +1595,17 @@ yyreduce:
                                    }
                                    paramAppel=0;
                             }
-#line 1660 "frag.tab.c"
+#line 1599 "frag.tab.c"
     break;
 
-  case 38:
-#line 263 "frag.y"
+  case 37:
+#line 205 "frag.y"
                             {
                                    if(!existe((yyvsp[-3].stringVal))){
-                                          // printf("La variable que vous voulez modifier n'est pas déclarée localement !\n");
                                           tmp = base; 
                                           base = 0; 
                                           tmpSommet=sommet; 
                                           sommet=sommetGlo;
-                                          
                                           if(!existe((yyvsp[-3].stringVal))){
                                                  printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",(yyvsp[-3].stringVal),lineno-1);
                                                  return 0;
@@ -1677,53 +1614,53 @@ yyreduce:
                                           sommet=tmpSommet;
                                    }
                             }
-#line 1681 "frag.tab.c"
+#line 1618 "frag.tab.c"
     break;
 
-  case 44:
-#line 286 "frag.y"
+  case 43:
+#line 226 "frag.y"
                                         { adresse_loc=tmp; }
-#line 1687 "frag.tab.c"
+#line 1624 "frag.tab.c"
     break;
 
-  case 46:
-#line 287 "frag.y"
+  case 45:
+#line 227 "frag.y"
                                         { adresse_loc=tmp; }
-#line 1693 "frag.tab.c"
+#line 1630 "frag.tab.c"
     break;
 
-  case 48:
-#line 290 "frag.y"
+  case 47:
+#line 230 "frag.y"
            {_context=C_LOC; base=sommet; tmp=adresse_loc; adresse_loc=0;  }
-#line 1699 "frag.tab.c"
+#line 1636 "frag.tab.c"
     break;
 
-  case 50:
-#line 293 "frag.y"
+  case 49:
+#line 233 "frag.y"
                {_context=C_LOC;}
-#line 1705 "frag.tab.c"
+#line 1642 "frag.tab.c"
+    break;
+
+  case 53:
+#line 247 "frag.y"
+                          {sommetGlo=sommet;}
+#line 1648 "frag.tab.c"
     break;
 
   case 54:
-#line 307 "frag.y"
-                          {sommetGlo=sommet;}
-#line 1711 "frag.tab.c"
+#line 247 "frag.y"
+                                                   {_context=C_GLO; base=0; adresse_loc=tmp; }
+#line 1654 "frag.tab.c"
     break;
 
-  case 55:
-#line 307 "frag.y"
-                                                   {_context=C_GLO; base=0; adresse_loc=tmp; }
-#line 1717 "frag.tab.c"
+  case 57:
+#line 251 "frag.y"
+                        {_context=C_LOC; base=sommet; adresse_loc=0;}
+#line 1660 "frag.tab.c"
     break;
 
   case 58:
-#line 311 "frag.y"
-                        {_context=C_LOC; base=sommet; adresse_loc=0;}
-#line 1723 "frag.tab.c"
-    break;
-
-  case 59:
-#line 311 "frag.y"
+#line 251 "frag.y"
                                                                                        {      
                                    tmp = base; 
                                    base = 0; 
@@ -1735,11 +1672,11 @@ yyreduce:
                                    base = tmp;
                                    sommet=tmpSommet;
                             }
-#line 1739 "frag.tab.c"
+#line 1676 "frag.tab.c"
     break;
 
-  case 63:
-#line 326 "frag.y"
+  case 62:
+#line 266 "frag.y"
                {
                      if(!existe((yyvsp[0].stringVal))){
                             // printf("La variable %s n'est pas déclarée localement !\n", $1);
@@ -1756,11 +1693,11 @@ yyreduce:
                             }
                      }
               }
-#line 1760 "frag.tab.c"
+#line 1697 "frag.tab.c"
     break;
 
-  case 64:
-#line 343 "frag.y"
+  case 63:
+#line 283 "frag.y"
                             {
                                    tmp = base; 
                                    base = 0; 
@@ -1773,11 +1710,11 @@ yyreduce:
                                           return 0;
                                    }
                             }
-#line 1777 "frag.tab.c"
+#line 1714 "frag.tab.c"
     break;
 
 
-#line 1781 "frag.tab.c"
+#line 1718 "frag.tab.c"
 
       default: break;
     }
@@ -2009,9 +1946,9 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 372 "frag.y"
+#line 312 "frag.y"
 
 int yyerror(void)
 { 
-       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction sans un bloc précédant la ligne %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno); return 1;
+       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction à la ligne 38 ou dans un bloc précédant cette dernière %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno); return 1;
 }

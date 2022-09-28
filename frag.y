@@ -24,7 +24,9 @@
 
 
 %left ADD MOINS
-%left MUL 
+%left MULT 
+
+
 // Début du programme
 %start programme
 
@@ -49,6 +51,8 @@
                      { i=i-1; }
               return i; 
        }
+
+     
 %}
 
 %union{
@@ -86,20 +90,7 @@ listArgsDef: VOID
 listTmpDef: TYPE ID {
                             if(!existe($2)){
                                    // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe($2)){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          base=tmp;
-                                          ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
@@ -109,20 +100,7 @@ listTmpDef: TYPE ID {
           | TYPE ID  {
                             if(!existe($2)){
                                    // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe($2)){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          base=tmp;
-                                          ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
@@ -132,32 +110,16 @@ listTmpDef: TYPE ID {
           ;
 
 // Liste pour un deuxième type de déclaration de variables 
-listVars: ID listBisVars  
-                     {
+listVarsTmp: ID {
                             if(!existe($1)){
                                    // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                    
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe($1)){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          ajouterEntree($1, _context, T_ENT, adresse_loc++, 0);
-                                          base=tmp;
-                                          
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",$1, lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree($1, _context, T_ENT, adresse_loc++, 0);
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$1, lineno-1);
                                    return 0;
                             }
-                     }
+                     } listBisVars  
         ; 
 
 listBisVars: %empty 
@@ -165,12 +127,12 @@ listBisVars: %empty
        ;
 
 listVars: %empty
-     | list
+     | listVarsTmp
      ; 
 
 
 /* Liste pour les délcarations de variables */ 
-listDeclarationVar: suiteFunct
+listDeclarationVar: listDecFunct
                   | TYPE ID PV 
                             {
                                    if(existe($2)){
@@ -186,7 +148,7 @@ listDeclarationVar: suiteFunct
                   ;
 
 /* Liste pour les déclarations de fonctions */ 
-listDecFunct: suiteMain
+listDecFunct: main
             | listDeclarationFunct listDecFunct 
             ;
 
@@ -206,39 +168,20 @@ listDeclarationFunct: TYPE ID LPAR  listArgs RPAR PV
                     ; 
 
 /* Lien pour la suite du programme */            
-suiteMain: main 
-         ; 
 
-suiteFunct: listDecFunct
-          ;
 
 instructions: %empty // Pas d'instructions 
             | TYPE listVars PV instructions
             | TYPE ID PV 
                      {
                             if(!existe($2)){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   tmp=base; 
-                                   base=0; 
-                                   tmpSommet=sommet;
-                                    
-                                   sommet=sommetGlo;
-                                   
-                                   if(!existe($2)){
-                                          // printf("La variable %s n'existe pas globalement non plus, on l'ajoute !\n",$2);
-                                          sommet=tmpSommet;
-                                          ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
-                                          base=tmp;
-                                          
-                                   }else{
-                                          printf("\033[31mLa variable %s a déjà été déclarée dans le contexte global\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
-                                          return 0;
-                                   }
+                                   ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);    
                             }
                             else{
                                    printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
                                    return 0;
                             }
+                           
                      } instructions                          
             | ID LPAR listp RPAR PV 
                             {      
@@ -246,7 +189,6 @@ instructions: %empty // Pas d'instructions
                                    base = 0; 
                                    tmpSommet=sommet; 
                                    sommet=sommetGlo;
-                                   
                                    if(!existe($1)){
                                           printf("\033[31mLa fonction %s appeler n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",$1, lineno);
                                           return 0;
@@ -262,12 +204,10 @@ instructions: %empty // Pas d'instructions
             | ID AFF expression PV 
                             {
                                    if(!existe($1)){
-                                          // printf("La variable que vous voulez modifier n'est pas déclarée localement !\n");
                                           tmp = base; 
                                           base = 0; 
                                           tmpSommet=sommet; 
                                           sommet=sommetGlo;
-                                          
                                           if(!existe($1)){
                                                  printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",$1,lineno-1);
                                                  return 0;
@@ -372,5 +312,5 @@ expressionBis: ADD expression
 %%
 int yyerror(void)
 { 
-       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction sans un bloc précédant la ligne %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno); return 1;
+       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction à la ligne 38 ou dans un bloc précédant cette dernière %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno); return 1;
 }
