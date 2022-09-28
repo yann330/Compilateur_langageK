@@ -74,7 +74,7 @@ listArgs: VOID
         | listTmp 
        ; 
        
-listTmp: TYPE ID {param++;} 
+listTmp: TYPE ID {param++;}
        | TYPE ID  SEPAR listTmp {param++;}
        ;
 

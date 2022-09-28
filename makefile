@@ -18,3 +18,5 @@ lex.yy.c: frag.l
 
 tabSymb.o: tabSymb.h tabSymb.c
 	gcc -c tabSymb.c
+clean: 
+	rm -rf *.o 
