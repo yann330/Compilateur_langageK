@@ -5,7 +5,7 @@ frag.o: frag.c tabSymb.c
 	gcc -c frag.c tabSymb.c
 
 frag.tab.c frag.tab.h: frag.y
-	bison -d frag.y --report=all
+	bison -d frag.y --report=all -Wall
 
 frag.tab.o: frag.tab.c tabSymb.c 
 	gcc -c frag.tab.c 

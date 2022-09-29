@@ -1,5 +1,4 @@
-/* 
-  ____                      _ _       _                  
+/* ____                      _ _       _                  
  / ___|___  _ __ ___  _ __ (_) | __ _| |_ ___ _   _ _ __ 
 | |   / _ \| '_ ` _ \| '_ \| | |/ _` | __/ _ \ | | | '__|
 | |__| (_) | | | | | | |_) | | | (_| | ||  __/ |_| | |   
@@ -18,14 +17,15 @@
 (_)__, |
   |___/ 
 */
-/* fichier ea.y */
+
 %token <intVal> ENT               
 %token <stringVal> ID EQ INFS INFE ET OR TYPE IF ELSE WHILE SEPAR PV ACF ACO ADD MOINS MULT AFF NOT RETURN MAIN  RPAR LPAR SUPS SUPE VOID
 
 
 %left ADD MOINS
-%left MULT 
-
+%left MULT
+%left '!' EQ ET OR  
+%left INFS INFE SUPS SUPE
 
 // Début du programme
 %start programme
@@ -34,16 +34,22 @@
        #include<stdio.h>
        #include<string.h>
        #include"tabSymb.h"
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <fcntl.h>
+
        int adresse_glob=0;
        int adresse_loc=0;
        int tmp=0;
        int tmpSommet;
        int _context=C_GLO; 
+       int _contextTmp;
        int param=0;
        int nbline=0;
        int paramAppel=0; 
        extern int lineno; 
        int sommetGlo;
+       char buffer[256];
 
        int functArgs(char* id){
                int i = sommet-1;
@@ -51,7 +57,142 @@
                      { i=i-1; }
               return i; 
        }
-
+       int testContextGlobID(char* id){
+              tmp=base; 
+              base=0;
+              for(int i=base; i<sommet; i++){
+                     if(strcmp(tsymb[i].identif,id)==0){
+                            base=tmp;
+                            return tsymb[i].classe==C_GLO;
+                     }
+              }
+              
+       }
+       int verifDeclarationVar(char* id){
+              if(!existe(id)){
+                     ajouterEntree(id, _context, T_ENT, adresse_loc++, 0);
+                     return 1;
+              }
+              else{
+                     printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",id, lineno-1);
+                     return 0;
+              }
+       }
+       int verifDeclarationFunctGlobal(char* id){
+              if(existe(id)){
+                     printf("\033[31mLa fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions ligne %d.\n\033[0m",id,lineno); 
+                     return 0;
+              }
+              else{
+                     ajouterEntree(id, _context, T_ENT, adresse_glob++, param); 
+              }
+       }
+       int verifAppelFunct(char* id){
+              tmp = base; 
+              base = 0; 
+              tmpSommet=sommet; 
+              sommet=sommetGlo;
+              if(!existe(id)){
+                     printf("\033[31mLa fonction %s appelée n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",id, lineno-1);
+                     return 0;
+              }
+              base = tmp;
+              sommet=tmpSommet;
+              return 1;
+       }
+       void warningParamFunct(char* id){
+              if(paramAppel != tsymb[functArgs(id)].complement){
+                     printf("\033[36mWarning:La fonction %s attend %d paramètres, vous en avez donné %d ligne %d\n\033[0m",id,tsymb[functArgs(id)].complement,paramAppel,lineno-1);
+              }
+       }
+       int verifUtilVar(char* id){
+              if(!existe(id)){
+                     tmp = base; 
+                     base = 0; 
+                     if(!existe(id)){
+                            printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",id,lineno-1);
+                            return 0;
+                     }
+                     base = tmp;
+              }
+       }
+       
+       void warningDefFunct(char* id){
+              tmp = base; 
+              base = 0; 
+              tmpSommet=sommet; 
+              sommet=sommetGlo;
+              if(!existe(id)){
+                     printf("\033[36mWarning: La fonction %s que vous avez définit à la ligne %d n'est pas déclarée\n\033[0m",id, lineno);
+              }
+              base = tmp;
+              sommet=tmpSommet;
+       }
+       void genCodeENT(int ent){
+              printf("\033[33mCode: pushq $%d\n\033[0m",ent);
+       }
+       int verifUtilVarlocal(char* id){
+              if(!existe(id)){
+                     tmp = base; 
+                     base = 0; 
+                     tmpSommet=sommet; 
+                     sommet=sommetGlo;
+                     if(!existe(id)){
+                            printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",id,lineno);
+                            base = tmp;
+                            sommet=tmpSommet;
+                            return 0;
+                     }
+              }
+              return 1;
+       }
+       void genCodeID(char* id){
+              printf("\033[33mCode: pushq $%s\n\033[0m",id);
+       }
+       void genCodeAffectation(char* label){
+              printf("\033[33mCode: popq %%rdi\n");
+              printf("Code: movq %%rdi, ($%s)\n\033[0m",label);
+       }
+       void genCodeNot(){
+              printf("\033[33mCode: popq %%rsi\n");
+              printf("Code: notq %%rsi\n\033[0m");
+       }
+       void genCodeOP(char* op){
+              if(strcmp(op,"+")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: addq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"-")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: subq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"*")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: mulq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"&&")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: andq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"||")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: orq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+       }
+       void genCodeVars(char* id){
+              if(_context==C_GLO)
+                     printf("\033[33mCode: %s:  .zero 8\n\033[0m",id);
+       }
      
 %}
 
@@ -78,72 +219,47 @@ listArgs: VOID
         | listTmp 
        ; 
        
-listTmp: TYPE ID {param++;}
-       | TYPE ID  SEPAR listTmp {param++;}
+listTmp: TYPE ID listTmpBis {param++;}
        ;
+listTmpBis: %empty
+          | SEPAR listTmp
+          ;
 
 // Liste des arguments pour les définitions de fonctions 
 listArgsDef: VOID
            | {base=sommet;} listTmpDef
            ; 
-       
+
 listTmpDef: TYPE ID {
-                            if(!existe($2)){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
+                            if(verifDeclarationVar($2)==0){
                                    return 0;
                             }
                      }
           | TYPE ID  {
-                            if(!existe($2)){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
+                            if(verifDeclarationVar($2)==0){
                                    return 0;
-                            }
+                            }   
                      } SEPAR listTmpDef
           ;
 
 // Liste pour un deuxième type de déclaration de variables 
-listVarsTmp: ID {
-                            if(!existe($1)){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   ajouterEntree($1, _context, T_ENT, adresse_loc++, 0);
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$1, lineno-1);
-                                   return 0;
-                            }
-                     } listBisVars  
-        ; 
-
-listBisVars: %empty 
-       | SEPAR listVars
-       ;
-
-listVars: %empty
-     | listVarsTmp
+listVars: ID {
+                     if(verifDeclarationVar($1)==0){
+                            return 0;
+                     }
+                     genCodeVars($1);
+              }
+     | ID {
+              if(verifDeclarationVar($1)==0){
+                     return 0;
+              }
+              genCodeID($1);
+       } SEPAR listVars
      ; 
 
 
 /* Liste pour les délcarations de variables */ 
-listDeclarationVar: listDecFunct
-                  | TYPE ID PV 
-                            {
-                                   if(existe($2)){
-                                          printf("\033[31mLa variable %s existe deja !\nErreur déclaration de variables ligne %d\n\033[0m",$2, lineno); 
-                                          return 0;
-                                   }
-                                   else{
-                                          // printf("La variable %s n'existe pas dans le contexte global, on l'ajoute!\n",$2); 
-                                          ajouterEntree($2, _context, T_ENT, adresse_glob++, 0); 
-                                   }
-                            } listDeclarationVar             
+listDeclarationVar: listDecFunct             
                   | TYPE listVars PV listDeclarationVar 
                   ;
 
@@ -154,163 +270,94 @@ listDecFunct: main
 
 listDeclarationFunct: TYPE ID LPAR  listArgs RPAR PV 
                                    {
-                                          if(existe($2)){
-                                                 printf("\033[31mLa fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions ligne %d.\n\033[0m",$2,lineno); 
+                                          if(verifDeclarationFunctGlobal($2)==0){
                                                  return 0;
                                           }
-                                          else{
-                                                 // printf("La fonction de nom %s n'existe pas dans le contexte global, on l'ajoute!\n",$2); 
-                                                 ajouterEntree($2, _context, T_ENT, adresse_glob++, param); 
-                                          }
-                                          param=0;
-                                          
+                                          param=0;   
                                    }           
                     ; 
-
-/* Lien pour la suite du programme */            
-
-
+           
 instructions: %empty // Pas d'instructions 
-            | TYPE listVars PV instructions
-            | TYPE ID PV 
-                     {
-                            if(!existe($2)){
-                                   ajouterEntree($2, _context, T_ENT, adresse_loc++, 0);    
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",$2, lineno-1);
-                                   return 0;
-                            }
-                           
-                     } instructions                          
+            | TYPE listVars PV instructions                         
             | ID LPAR listp RPAR PV 
                             {      
-                                   tmp = base; 
-                                   base = 0; 
-                                   tmpSommet=sommet; 
-                                   sommet=sommetGlo;
-                                   if(!existe($1)){
-                                          printf("\033[31mLa fonction %s appeler n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",$1, lineno);
+                                   if(verifAppelFunct($1)==0)
                                           return 0;
-                                   }
-                                   base = tmp;
-                                   sommet=tmpSommet;
-                                   // Fonction existe
-                                   if(paramAppel != tsymb[functArgs($1)].complement){
-                                          printf("\033[36mWarning:La fonction %s attend %d paramètres, vous en avez donné %d ligne %d\n\033[0m",$1,tsymb[functArgs($1)].complement,paramAppel,lineno);
-                                   }
+                                   warningParamFunct($1);
                                    paramAppel=0;
                             } instructions                
             | ID AFF expression PV 
                             {
-                                   if(!existe($1)){
-                                          tmp = base; 
-                                          base = 0; 
-                                          tmpSommet=sommet; 
-                                          sommet=sommetGlo;
-                                          if(!existe($1)){
-                                                 printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",$1,lineno-1);
-                                                 return 0;
-                                          }
-                                          base = tmp;
-                                          sommet=tmpSommet;
-                                   }
+                                   verifUtilVar($1);
+                                   genCodeAffectation($1);
                             } instructions                
             | condition
             | while   
             | retour                  
             ;
 // Conditions
-while: WHILE LPAR expression RPAR bloc instructions            // {printf(" while avec bloc d'instructions\n");}
+while: WHILE LPAR expression RPAR bloc instructions            
 
-condition: IF LPAR expression RPAR bloc { adresse_loc=tmp; } instructions                     // {printf(" if sans else\n");}
-         | IF LPAR expression RPAR bloc { adresse_loc=tmp; } ELSE bloc instructions // {printf(" if avec else et blocs d'instructions\n");}
+condition: IF LPAR expression RPAR  bloc {_contextTmp=_context;adresse_loc=tmp; } instructions                     
+         | IF LPAR expression RPAR bloc {adresse_loc=tmp;} ELSE bloc {_contextTmp=_context;adresse_loc=tmp;}  instructions 
 
 // Bloc d'instructions 
-bloc:  ACO {_context=C_LOC; base=sommet; tmp=adresse_loc; adresse_loc=0;  } instructions ACF
+bloc:  ACO { tmp=adresse_loc; adresse_loc=0;  } instructions ACF
     ;
 
 blocFunct: ACO {_context=C_LOC;} instructions ACF
          ;
 
-// Valeur de retour 
+
+
 
 retour: RETURN expression PV instructions 
       ;
 
-
-
-programme: listDeclarationVar                                  // {printf("je viens de lire une programme\n"); }
+programme: listDeclarationVar                                  
          ; 
 
 // Fonction principale 
-main: TYPE MAIN LPAR RPAR {sommetGlo=sommet;} bloc {_context=C_GLO; base=0; adresse_loc=tmp; } fonctions
+main: TYPE MAIN LPAR RPAR {sommetGlo=sommet;} bloc {base=0; adresse_loc=tmp; } fonctions
     ;
 
+// Définition des fonctions 
 fonctions: %empty
-         | TYPE ID LPAR {_context=C_LOC; base=sommet; adresse_loc=0;} listArgsDef RPAR {      
-                                   tmp = base; 
-                                   base = 0; 
-                                   tmpSommet=sommet; 
-                                   sommet=sommetGlo;
-                                   if(!existe($2)){
-                                          printf("\033[36mWarning: La fonction %s que vous avez définit à la ligne %d n'est pas déclarée\n\033[0m",$2, lineno);
-                                   }
-                                   base = tmp;
-                                   sommet=tmpSommet;
-                            } blocFunct fonctions
+         | TYPE ID LPAR {_context=C_LOC; base=sommet; adresse_loc=0;} listArgsDef RPAR {warningDefFunct($2);} blocFunct fonctions
          ;
 
 expression: expression expressionBis 
-          | ENT                                                // {printf(" J'ai lu %d\n",$1);}
+          | ENT              {genCodeENT($1);}                                   
           | ID {
-                     if(!existe($1)){
-                            // printf("La variable %s n'est pas déclarée localement !\n", $1);
-                            tmp = base; 
-                            base = 0; 
-                            tmpSommet=sommet; 
-                            sommet=sommetGlo;
-                            if(!existe($1)){
-                                   printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",$1,lineno);
-                                   base = tmp;
-                                   sommet=tmpSommet;
-                                   return 0;
-                                   
-                            }
-                     }
+                     if(verifUtilVarlocal($1)==0)
+                            return 0; 
+                     genCodeID($1);
               }                                
           | ID LPAR listp RPAR  
                             {
-                                   tmp = base; 
-                                   base = 0; 
-                                   tmpSommet=sommet; 
-                                   sommet=sommetGlo;
-                                   if(!existe($1)){
-                                          printf("\033[31mLa fonction %s n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",$1, lineno-1);
-                                          base = tmp;
-                                          sommet=tmpSommet;
-                                          return 0;
-                                   }
+                                   verifAppelFunct($1);
                             }
           | LPAR expression RPAR  
-          | '!' expression 
+          | '!' expression {
+                               genCodeNot();   
+                            }
           ; 
 
-expressionBis: ADD expression
-             | MOINS expression
-             | MULT expression
-             | EQ expression                                   // {printf(" J'ai lu %s\n",$1);}
-             | INFS expression                                 // {printf(" J'ai lu %s\n",$1);}
-             | INFE expression                                 // {printf(" J'ai lu %s\n",$1);}
+expressionBis: ADD expression                          {genCodeOP($1);}
+             | MOINS expression                        {genCodeOP($1);}
+             | MULT expression                         {genCodeOP($1);}
+             | EQ expression                                   
+             | INFS expression                                 
+             | INFE expression                                 
              | SUPE expression
              | SUPS expression
-             | ET expression                                   // {printf(" J'ai lu %s\n",$1);}
-             | OR expression                                   // {printf(" J'ai lu %s\n",$1);}
+             | ET expression                            {genCodeOP($1);}
+             | OR expression                            {genCodeOP($1);}
              ;
 
 
 %%
 int yyerror(void)
 { 
-       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction à la ligne 38 ou dans un bloc précédant cette dernière %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno); return 1;
+       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction à la ligne %d ou dans un bloc précédant cette dernière %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno,lineno); return 1;
 }

@@ -1,42 +1,32 @@
 int var_glob_x;
 int var_glob_z;
-
-
 int x;
 
 int hello_world(void);
 int produit(int num1, int num2);
 int max(int a, int b, int c);
 int suiv(void);
-
-
+int dec(int a);
 
 int main(){
-
-    int x;
     int age;
     int y;
+    int f;
     int test;
-
-  
-
-    if(1){
-      int age;
-    }
-
+    int z;
+    f=test+3;
+    f=f-3;
+    age=test*test+3;
+    max(age,y);
 }
 
-int func(int m, int y){
-  int machin;
-  int bidule;
-  
-  bidule = 9;
-  return bidule;
+int dec(int a){
+  int x;
 }
 
-int suiv(int a, int c, int m){
-  int z,n;
-  if(1){
-  }
+int max(int a, int b, int c){
+  int m;
 }
+
+int warningTest(int a){}
 

@@ -71,16 +71,22 @@
        #include<stdio.h>
        #include<string.h>
        #include"tabSymb.h"
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <fcntl.h>
+
        int adresse_glob=0;
        int adresse_loc=0;
        int tmp=0;
        int tmpSommet;
        int _context=C_GLO; 
+       int _contextTmp;
        int param=0;
        int nbline=0;
        int paramAppel=0; 
        extern int lineno; 
        int sommetGlo;
+       char buffer[256];
 
        int functArgs(char* id){
                int i = sommet-1;
@@ -88,10 +94,145 @@
                      { i=i-1; }
               return i; 
        }
-
+       int testContextGlobID(char* id){
+              tmp=base; 
+              base=0;
+              for(int i=base; i<sommet; i++){
+                     if(strcmp(tsymb[i].identif,id)==0){
+                            base=tmp;
+                            return tsymb[i].classe==C_GLO;
+                     }
+              }
+              
+       }
+       int verifDeclarationVar(char* id){
+              if(!existe(id)){
+                     ajouterEntree(id, _context, T_ENT, adresse_loc++, 0);
+                     return 1;
+              }
+              else{
+                     printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",id, lineno-1);
+                     return 0;
+              }
+       }
+       int verifDeclarationFunctGlobal(char* id){
+              if(existe(id)){
+                     printf("\033[31mLa fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions ligne %d.\n\033[0m",id,lineno); 
+                     return 0;
+              }
+              else{
+                     ajouterEntree(id, _context, T_ENT, adresse_glob++, param); 
+              }
+       }
+       int verifAppelFunct(char* id){
+              tmp = base; 
+              base = 0; 
+              tmpSommet=sommet; 
+              sommet=sommetGlo;
+              if(!existe(id)){
+                     printf("\033[31mLa fonction %s appelée n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",id, lineno-1);
+                     return 0;
+              }
+              base = tmp;
+              sommet=tmpSommet;
+              return 1;
+       }
+       void warningParamFunct(char* id){
+              if(paramAppel != tsymb[functArgs(id)].complement){
+                     printf("\033[36mWarning:La fonction %s attend %d paramètres, vous en avez donné %d ligne %d\n\033[0m",id,tsymb[functArgs(id)].complement,paramAppel,lineno-1);
+              }
+       }
+       int verifUtilVar(char* id){
+              if(!existe(id)){
+                     tmp = base; 
+                     base = 0; 
+                     if(!existe(id)){
+                            printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",id,lineno-1);
+                            return 0;
+                     }
+                     base = tmp;
+              }
+       }
+       
+       void warningDefFunct(char* id){
+              tmp = base; 
+              base = 0; 
+              tmpSommet=sommet; 
+              sommet=sommetGlo;
+              if(!existe(id)){
+                     printf("\033[36mWarning: La fonction %s que vous avez définit à la ligne %d n'est pas déclarée\n\033[0m",id, lineno);
+              }
+              base = tmp;
+              sommet=tmpSommet;
+       }
+       void genCodeENT(int ent){
+              printf("\033[33mCode: pushq $%d\n\033[0m",ent);
+       }
+       int verifUtilVarlocal(char* id){
+              if(!existe(id)){
+                     tmp = base; 
+                     base = 0; 
+                     tmpSommet=sommet; 
+                     sommet=sommetGlo;
+                     if(!existe(id)){
+                            printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",id,lineno);
+                            base = tmp;
+                            sommet=tmpSommet;
+                            return 0;
+                     }
+              }
+              return 1;
+       }
+       void genCodeID(char* id){
+              printf("\033[33mCode: pushq $%s\n\033[0m",id);
+       }
+       void genCodeAffectation(char* label){
+              printf("\033[33mCode: popq %%rdi\n");
+              printf("Code: movq %%rdi, ($%s)\n\033[0m",label);
+       }
+       void genCodeNot(){
+              printf("\033[33mCode: popq %%rsi\n");
+              printf("Code: notq %%rsi\n\033[0m");
+       }
+       void genCodeOP(char* op){
+              if(strcmp(op,"+")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: addq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"-")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: subq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"*")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: mulq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"&&")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: andq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+              else if(strcmp(op,"||")==0){
+                     printf("\033[33mCode: popq %%rsi\n");
+                     printf("Code: popq %%rdi\n");
+                     printf("Code: orq %%rsi %%rdi\n");
+                     printf("Code: pushq %%rdi\n\033[0m");
+              }
+       }
+       void genCodeVars(char* id){
+              if(_context==C_GLO)
+                     printf("\033[33mCode: %s:  .zero 8\n\033[0m",id);
+       }
      
 
-#line 95 "frag.tab.c"
+#line 236 "frag.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -173,12 +314,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 58 "frag.y"
+#line 199 "frag.y"
 
         int intVal; 
         char* stringVal;    
 
-#line 182 "frag.tab.c"
+#line 323 "frag.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -495,18 +636,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  13
+#define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   191
+#define YYLAST   196
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  31
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  41
+#define YYNNTS  39
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  75
+#define YYNRULES  70
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  147
+#define YYNSTATES  140
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   284
@@ -556,14 +697,14 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    66,    66,    66,    68,    69,    72,    73,    77,    78,
-      81,    82,    86,    87,    87,    90,   100,   100,   113,   113,
-     125,   126,   129,   130,   135,   137,   136,   147,   151,   152,
-     155,   173,   174,   176,   175,   187,   186,   205,   204,   219,
-     220,   221,   224,   226,   226,   227,   227,   230,   230,   233,
-     233,   238,   243,   247,   247,   247,   250,   251,   251,   251,
-     264,   265,   266,   282,   295,   296,   299,   300,   301,   302,
-     303,   304,   305,   306,   307,   308
+       0,   207,   207,   207,   209,   210,   213,   214,   218,   219,
+     222,   224,   225,   229,   230,   230,   233,   238,   238,   246,
+     252,   252,   262,   263,   267,   268,   271,   280,   281,   283,
+     282,   290,   289,   294,   295,   296,   299,   301,   301,   302,
+     302,   302,   305,   305,   308,   308,   314,   317,   321,   321,
+     321,   325,   326,   326,   326,   329,   330,   331,   336,   340,
+     341,   346,   347,   348,   349,   350,   351,   352,   353,   354,
+     355
 };
 #endif
 
@@ -576,12 +717,12 @@ static const char *const yytname[] =
   "OR", "TYPE", "IF", "ELSE", "WHILE", "SEPAR", "PV", "ACF", "ACO", "ADD",
   "MOINS", "MULT", "AFF", "NOT", "RETURN", "MAIN", "RPAR", "LPAR", "SUPS",
   "SUPE", "VOID", "'!'", "$accept", "list", "$@1", "listBis", "listp",
-  "listArgs", "listTmp", "listArgsDef", "$@2", "listTmpDef", "$@3",
-  "listVarsTmp", "$@4", "listBisVars", "listVars", "listDeclarationVar",
-  "$@5", "listDecFunct", "listDeclarationFunct", "instructions", "$@6",
-  "$@7", "$@8", "while", "condition", "$@9", "$@10", "bloc", "$@11",
-  "blocFunct", "$@12", "retour", "programme", "main", "$@13", "$@14",
-  "fonctions", "$@15", "$@16", "expression", "expressionBis", YY_NULLPTR
+  "listArgs", "listTmp", "listTmpBis", "listArgsDef", "$@2", "listTmpDef",
+  "$@3", "listVars", "$@4", "listDeclarationVar", "listDecFunct",
+  "listDeclarationFunct", "instructions", "$@5", "$@6", "while",
+  "condition", "$@7", "$@8", "$@9", "bloc", "$@10", "blocFunct", "$@11",
+  "retour", "programme", "main", "$@12", "$@13", "fonctions", "$@14",
+  "$@15", "expression", "expressionBis", YY_NULLPTR
 };
 #endif
 
@@ -597,12 +738,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-95)
+#define YYPACT_NINF (-88)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-46)
+#define YYTABLE_NINF (-40)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -611,21 +752,20 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-       4,     8,   -95,   -95,     7,    35,   -95,    16,    12,   -95,
-      32,     9,   -95,   -95,   -95,     5,    34,    24,     4,    27,
-       4,    46,   -95,    33,   -95,    53,   -95,   -95,   -95,   -95,
-      47,    48,   -95,   -95,    45,    54,   -95,   -95,   -95,   -95,
-      14,    56,    15,    63,    42,    43,     0,    55,   -95,   -95,
-     -95,    68,   -95,     0,     0,    58,    59,     0,     0,   -95,
-      71,     0,     0,     1,   -95,    72,    81,   -95,    77,   158,
-     -95,    14,    86,   110,     0,   134,   158,     0,     0,     0,
-       0,     0,    14,     0,     0,     0,     0,     0,   -95,   -95,
-     -95,    65,    89,    14,   -95,    45,    45,    82,   -95,   158,
-     158,   158,   158,   158,   -95,   163,   163,   117,   158,   158,
-      83,    14,   -95,     0,   -95,   -95,    98,    14,   -95,   -95,
-      95,   111,   -95,    14,   -95,    14,   115,   -95,   -95,   127,
-     -95,   -95,   -95,    45,   116,   118,    14,   -95,    56,   120,
-     -95,    14,   -95,   111,   130,   -95,   -95
+      -3,     8,   -88,   -88,     0,    16,   -88,   -11,    -9,     4,
+      10,   -88,   -88,    -4,    32,    22,    -3,    23,    44,   -88,
+      26,   -88,    49,   -88,   -88,    40,    45,    52,   -88,    63,
+      71,   -88,   -88,   -88,   -88,   -88,   107,    83,    -8,    49,
+      68,    84,     1,    74,   -88,   -88,   -88,   102,   -88,     1,
+       1,    94,     1,     1,   -88,    86,     1,     1,    64,   -88,
+      87,    80,   -88,    97,   168,   107,    96,   120,     1,   144,
+       2,     1,     1,     1,     1,     1,   107,     1,     1,     1,
+       1,     1,   -88,   -88,   -88,   104,   117,   -88,    63,    63,
+     108,   -88,     2,   -88,   -88,     2,     2,   -88,    15,    15,
+      69,   -88,   -88,   103,   107,   -88,     1,   -88,   122,   107,
+     -88,   -88,   110,   126,   -88,   107,   -88,   107,   125,   -88,
+     -88,   137,   -88,   -88,   -88,    63,   127,   128,   -88,   -88,
+      83,   129,   107,   107,   -88,   126,   -88,   130,   -88,   -88
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -633,41 +773,38 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,    22,    52,    24,     0,     0,    28,    18,     0,    23,
-       0,     0,    29,     1,    25,     0,    20,     0,     0,     0,
-       0,     0,     8,     0,     9,    22,    19,    53,    27,    26,
-      10,     0,    18,    21,     0,     0,    30,    47,    54,    11,
-      31,    56,     0,    22,     0,     0,     0,     0,    40,    39,
-      41,     0,    55,     0,     6,    18,     0,     0,     0,    61,
-      62,     0,     0,     0,    48,     0,     0,     7,     0,     2,
-      33,    31,     0,     0,     6,     0,    65,     0,     0,     0,
-       0,     0,    31,     0,     0,     0,     0,     0,    60,    57,
-      37,     0,     4,    31,    32,     0,     0,     0,    64,    69,
-      70,    71,    74,    75,    51,    66,    67,    68,    73,    72,
-      13,    31,    35,     0,     3,    34,    43,    31,    63,    12,
-       0,     0,    38,    31,     5,    31,     0,    42,    58,     0,
-      14,    36,    44,     0,     0,    15,    31,    49,    56,     0,
-      46,    31,    59,     0,     0,    17,    50
+       0,     0,    47,    22,     0,     0,    24,    19,     0,     0,
+       0,    25,     1,     0,     0,     0,     0,     0,     0,     8,
+       0,     9,     0,    48,    23,    11,     0,    19,    21,     0,
+       0,    10,    26,    42,    49,    12,    27,    51,     0,     0,
+       0,     0,     0,     0,    34,    33,    35,     0,    50,     0,
+       6,     0,     0,     0,    56,    57,     0,     0,     0,    43,
+       0,     0,     7,     0,     2,    27,     0,     0,     6,     0,
+      60,     0,     0,     0,     0,     0,    27,     0,     0,     0,
+       0,     0,    55,    52,    31,     0,     4,    28,     0,     0,
+       0,    59,    64,    65,    66,    69,    70,    46,    61,    62,
+      63,    68,    67,    14,    27,    29,     0,     3,    37,    27,
+      58,    13,     0,     0,    32,    27,     5,    27,     0,    36,
+      53,     0,    15,    30,    38,     0,     0,    16,    40,    44,
+      51,     0,    27,    27,    54,     0,    41,     0,    18,    45
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -95,    23,   -95,   -95,    73,   -95,   113,   -95,   -95,     6,
-     -95,   -95,   -95,   -95,   -20,    25,   -95,   146,   -95,   -71,
-     -95,   -95,   -95,   -95,   -95,   -95,   -95,   -94,   -95,   -95,
-     -95,   -95,   -95,   -95,   -95,   -95,    13,   -95,   -95,    -2,
-     -95
+     -88,    48,   -88,   -88,    88,   -88,   131,   -88,   -88,   -88,
+      20,   -88,     6,   -88,   141,   154,   -88,   -65,   -88,   -88,
+     -88,   -88,   -88,   -88,   -88,   -87,   -88,   -88,   -88,   -88,
+     -88,   -88,   -88,   -88,    29,   -88,   -88,   -16,   -88
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
-      -1,    67,    92,   114,    68,    23,    24,   120,   121,   130,
-     139,     9,    16,    26,    10,     2,    20,     3,     4,    47,
-      93,   123,   111,    48,    49,   125,   126,    38,    40,   138,
-     141,    50,     5,     6,    34,    41,    52,   110,   134,    69,
-      88
+      -1,    62,    86,   107,    63,    20,    21,    31,   112,   113,
+     122,   131,     9,    14,     2,     3,     4,    43,   115,   104,
+      44,    45,   117,   118,   132,    34,    36,   130,   133,    46,
+       5,     6,    29,    37,    48,   103,   126,    64,    82
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -675,97 +812,96 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      94,   116,   117,    59,    60,    33,    77,    78,    79,    80,
-      81,   104,     7,    19,     1,    21,    82,    11,    42,    83,
-      84,    85,   115,    56,    43,    44,    61,    45,    86,    87,
-      62,    14,     8,     8,    22,    13,    53,    46,    17,   136,
-     122,    54,    15,    28,    63,    29,   127,    18,    25,    27,
-      30,    66,   131,    15,   132,    72,    73,    32,    31,    75,
-      76,    35,    37,    36,    21,   140,    51,    55,    57,    58,
-     144,    64,    65,    70,    71,    99,   100,   101,   102,   103,
-     112,   105,   106,   107,   108,   109,    77,    78,    79,    80,
-      81,    77,    78,    79,    80,    81,    90,    74,    89,    83,
-      84,    85,    91,   113,    83,    84,    85,   118,    86,    87,
-     -45,    95,   119,    86,    87,    77,    78,    79,    80,    81,
-     128,   129,    77,    78,    79,    80,    81,   133,    83,    84,
-      85,   135,   -16,   137,   143,    96,   124,    86,    87,    77,
-      78,    79,    80,    81,    86,    87,   146,    97,    39,   145,
-      12,   142,    83,    84,    85,     0,     0,     0,     0,    98,
-       0,    86,    87,    77,    78,    79,    80,    81,    77,    78,
-      79,    80,    81,     0,     0,     0,    83,    84,    85,     0,
-       0,     0,     0,    85,     0,    86,    87,     0,     0,     0,
-      86,    87
+      87,   108,   109,   -20,    54,    55,    18,     1,    72,    73,
+      10,    97,     7,    49,    17,    13,    12,    15,    50,    16,
+      71,    72,    73,    74,    75,    19,    58,    56,    28,    80,
+      81,    57,     8,    61,     8,    79,    66,    67,   128,   114,
+      69,    70,    80,    81,   119,    51,    22,    23,    25,    13,
+     123,    26,   124,    27,    30,    92,    93,    94,    95,    96,
+      32,    98,    99,   100,   101,   102,   -20,   136,   137,    71,
+      72,    73,    74,    75,    71,    72,    73,    74,    75,    76,
+      33,    18,    77,    78,    79,    71,    72,    73,    74,    75,
+      59,    80,    81,    47,    52,    84,    80,    81,    77,    78,
+      79,    71,    72,    73,    74,    75,    60,    80,    81,    65,
+      53,    38,    68,    83,    77,    78,    79,    39,    40,   105,
+      41,    88,    85,    80,    81,    71,    72,    73,    74,    75,
+      42,   106,   111,   110,   -39,   120,   121,   125,    77,    78,
+      79,   127,   -17,   135,   129,    89,   139,    80,    81,    71,
+      72,    73,    74,    75,   116,   138,    90,    24,    11,   134,
+       0,    35,    77,    78,    79,     0,     0,     0,     0,    91,
+       0,    80,    81,    71,    72,    73,    74,    75,     0,     0,
+       0,     0,     0,     0,     0,     0,    77,    78,    79,     0,
+       0,     0,     0,     0,     0,    80,    81
 };
 
 static const yytype_int16 yycheck[] =
 {
-      71,    95,    96,     3,     4,    25,     5,     6,     7,     8,
-       9,    82,     4,     4,    10,    10,    15,    10,     4,    18,
-      19,    20,    93,    43,    10,    11,    26,    13,    27,    28,
-      30,    15,    24,    24,    29,     0,    21,    23,    26,   133,
-     111,    26,    26,    18,    46,    20,   117,    15,    14,    25,
-       4,    53,   123,    26,   125,    57,    58,     4,    25,    61,
-      62,    14,    17,    15,    10,   136,    10,     4,    26,    26,
-     141,    16,     4,    15,    15,    77,    78,    79,    80,    81,
-      15,    83,    84,    85,    86,    87,     5,     6,     7,     8,
-       9,     5,     6,     7,     8,     9,    15,    26,    26,    18,
-      19,    20,    25,    14,    18,    19,    20,    25,    27,    28,
-      12,    25,    29,    27,    28,     5,     6,     7,     8,     9,
-      25,    10,     5,     6,     7,     8,     9,    12,    18,    19,
-      20,     4,    14,    17,    14,    25,   113,    27,    28,     5,
-       6,     7,     8,     9,    27,    28,    16,    74,    35,   143,
-       4,   138,    18,    19,    20,    -1,    -1,    -1,    -1,    25,
-      -1,    27,    28,     5,     6,     7,     8,     9,     5,     6,
-       7,     8,     9,    -1,    -1,    -1,    18,    19,    20,    -1,
-      -1,    -1,    -1,    20,    -1,    27,    28,    -1,    -1,    -1,
-      27,    28
+      65,    88,    89,    14,     3,     4,    10,    10,     6,     7,
+      10,    76,     4,    21,     4,    26,     0,    26,    26,    15,
+       5,     6,     7,     8,     9,    29,    42,    26,    22,    27,
+      28,    30,    24,    49,    24,    20,    52,    53,   125,   104,
+      56,    57,    27,    28,   109,    39,    14,    25,     4,    26,
+     115,    25,   117,     4,    14,    71,    72,    73,    74,    75,
+      15,    77,    78,    79,    80,    81,    14,   132,   133,     5,
+       6,     7,     8,     9,     5,     6,     7,     8,     9,    15,
+      17,    10,    18,    19,    20,     5,     6,     7,     8,     9,
+      16,    27,    28,    10,    26,    15,    27,    28,    18,    19,
+      20,     5,     6,     7,     8,     9,     4,    27,    28,    15,
+      26,     4,    26,    26,    18,    19,    20,    10,    11,    15,
+      13,    25,    25,    27,    28,     5,     6,     7,     8,     9,
+      23,    14,    29,    25,    12,    25,    10,    12,    18,    19,
+      20,     4,    14,    14,    17,    25,    16,    27,    28,     5,
+       6,     7,     8,     9,   106,   135,    68,    16,     4,   130,
+      -1,    30,    18,    19,    20,    -1,    -1,    -1,    -1,    25,
+      -1,    27,    28,     5,     6,     7,     8,     9,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    18,    19,    20,    -1,
+      -1,    -1,    -1,    -1,    -1,    27,    28
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    10,    46,    48,    49,    63,    64,     4,    24,    42,
-      45,    10,    48,     0,    15,    26,    43,    26,    15,     4,
-      47,    10,    29,    36,    37,    14,    44,    25,    46,    46,
-       4,    25,     4,    45,    65,    14,    15,    17,    58,    37,
-      59,    66,     4,    10,    11,    13,    23,    50,    54,    55,
-      62,    10,    67,    21,    26,     4,    45,    26,    26,     3,
-       4,    26,    30,    70,    16,     4,    70,    32,    35,    70,
-      15,    15,    70,    70,    26,    70,    70,     5,     6,     7,
-       8,     9,    15,    18,    19,    20,    27,    28,    71,    26,
-      15,    25,    33,    51,    50,    25,    25,    35,    25,    70,
-      70,    70,    70,    70,    50,    70,    70,    70,    70,    70,
-      68,    53,    15,    14,    34,    50,    58,    58,    25,    29,
-      38,    39,    50,    52,    32,    56,    57,    50,    25,    10,
-      40,    50,    50,    12,    69,     4,    58,    17,    60,    41,
-      50,    61,    67,    14,    50,    40,    16
+       0,    10,    45,    46,    47,    61,    62,     4,    24,    43,
+      10,    46,     0,    26,    44,    26,    15,     4,    10,    29,
+      36,    37,    14,    25,    45,     4,    25,     4,    43,    63,
+      14,    38,    15,    17,    56,    37,    57,    64,     4,    10,
+      11,    13,    23,    48,    51,    52,    60,    10,    65,    21,
+      26,    43,    26,    26,     3,     4,    26,    30,    68,    16,
+       4,    68,    32,    35,    68,    15,    68,    68,    26,    68,
+      68,     5,     6,     7,     8,     9,    15,    18,    19,    20,
+      27,    28,    69,    26,    15,    25,    33,    48,    25,    25,
+      35,    25,    68,    68,    68,    68,    68,    48,    68,    68,
+      68,    68,    68,    66,    50,    15,    14,    34,    56,    56,
+      25,    29,    39,    40,    48,    49,    32,    53,    54,    48,
+      25,    10,    41,    48,    48,    12,    67,     4,    56,    17,
+      58,    42,    55,    59,    65,    14,    48,    48,    41,    16
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    31,    33,    32,    34,    34,    35,    35,    36,    36,
-      37,    37,    38,    39,    38,    40,    41,    40,    43,    42,
-      44,    44,    45,    45,    46,    47,    46,    46,    48,    48,
-      49,    50,    50,    51,    50,    52,    50,    53,    50,    50,
-      50,    50,    54,    56,    55,    57,    55,    59,    58,    61,
-      60,    62,    63,    65,    66,    64,    67,    68,    69,    67,
-      70,    70,    70,    70,    70,    70,    71,    71,    71,    71,
-      71,    71,    71,    71,    71,    71
+      37,    38,    38,    39,    40,    39,    41,    42,    41,    43,
+      44,    43,    45,    45,    46,    46,    47,    48,    48,    49,
+      48,    50,    48,    48,    48,    48,    51,    53,    52,    54,
+      55,    52,    57,    56,    59,    58,    60,    61,    63,    64,
+      62,    65,    66,    67,    65,    68,    68,    68,    68,    68,
+      68,    69,    69,    69,    69,    69,    69,    69,    69,    69,
+      69
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     0,     3,     0,     2,     0,     1,     1,     1,
-       2,     4,     1,     0,     2,     2,     0,     5,     0,     3,
-       0,     2,     0,     1,     1,     0,     5,     4,     1,     2,
-       6,     0,     4,     0,     5,     0,     7,     0,     6,     1,
-       1,     1,     6,     0,     7,     0,     9,     0,     4,     0,
-       4,     4,     1,     0,     0,     8,     0,     0,     0,     9,
-       2,     1,     1,     4,     3,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2
+       3,     0,     2,     1,     0,     2,     2,     0,     5,     1,
+       0,     4,     1,     4,     1,     2,     6,     0,     4,     0,
+       7,     0,     6,     1,     1,     1,     6,     0,     7,     0,
+       0,    10,     0,     4,     0,     4,     4,     1,     0,     0,
+       8,     0,     0,     0,     9,     2,     1,     1,     4,     3,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2
 };
 
 
@@ -1461,260 +1597,214 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 66 "frag.y"
+#line 207 "frag.y"
                  {paramAppel++;}
-#line 1467 "frag.tab.c"
+#line 1603 "frag.tab.c"
     break;
 
   case 10:
-#line 81 "frag.y"
-                 {param++;}
-#line 1473 "frag.tab.c"
+#line 222 "frag.y"
+                            {param++;}
+#line 1609 "frag.tab.c"
     break;
 
-  case 11:
-#line 82 "frag.y"
-                                {param++;}
-#line 1479 "frag.tab.c"
-    break;
-
-  case 13:
-#line 87 "frag.y"
+  case 14:
+#line 230 "frag.y"
              {base=sommet;}
-#line 1485 "frag.tab.c"
-    break;
-
-  case 15:
-#line 90 "frag.y"
-                    {
-                            if(!existe((yyvsp[0].stringVal))){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
-                                   return 0;
-                            }
-                     }
-#line 1500 "frag.tab.c"
+#line 1615 "frag.tab.c"
     break;
 
   case 16:
-#line 100 "frag.y"
+#line 233 "frag.y"
+                    {
+                            if(verifDeclarationVar((yyvsp[0].stringVal))==0){
+                                   return 0;
+                            }
+                     }
+#line 1625 "frag.tab.c"
+    break;
+
+  case 17:
+#line 238 "frag.y"
                      {
-                            if(!existe((yyvsp[0].stringVal))){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
+                            if(verifDeclarationVar((yyvsp[0].stringVal))==0){
                                    return 0;
-                            }
+                            }   
                      }
-#line 1515 "frag.tab.c"
+#line 1635 "frag.tab.c"
     break;
 
-  case 18:
-#line 113 "frag.y"
-                {
-                            if(!existe((yyvsp[0].stringVal))){
-                                   // printf("La variable %s n'existe pas localement dans la table\n",$2);
-                                   ajouterEntree((yyvsp[0].stringVal), _context, T_ENT, adresse_loc++, 0);
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[0].stringVal), lineno-1);
-                                   return 0;
-                            }
+  case 19:
+#line 246 "frag.y"
+             {
+                     if(verifDeclarationVar((yyvsp[0].stringVal))==0){
+                            return 0;
                      }
-#line 1530 "frag.tab.c"
+                     genCodeVars((yyvsp[0].stringVal));
+              }
+#line 1646 "frag.tab.c"
     break;
 
-  case 25:
-#line 137 "frag.y"
-                            {
-                                   if(existe((yyvsp[-1].stringVal))){
-                                          printf("\033[31mLa variable %s existe deja !\nErreur déclaration de variables ligne %d\n\033[0m",(yyvsp[-1].stringVal), lineno); 
-                                          return 0;
-                                   }
-                                   else{
-                                          // printf("La variable %s n'existe pas dans le contexte global, on l'ajoute!\n",$2); 
-                                          ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_glob++, 0); 
-                                   }
-                            }
-#line 1545 "frag.tab.c"
+  case 20:
+#line 252 "frag.y"
+          {
+              if(verifDeclarationVar((yyvsp[0].stringVal))==0){
+                     return 0;
+              }
+              genCodeID((yyvsp[0].stringVal));
+       }
+#line 1657 "frag.tab.c"
     break;
 
-  case 30:
-#line 156 "frag.y"
+  case 26:
+#line 272 "frag.y"
                                    {
-                                          if(existe((yyvsp[-4].stringVal))){
-                                                 printf("\033[31mLa fonction de nom %s existe deja dans le contexte global!\nErreur déclaration de fonctions ligne %d.\n\033[0m",(yyvsp[-4].stringVal),lineno); 
+                                          if(verifDeclarationFunctGlobal((yyvsp[-4].stringVal))==0){
                                                  return 0;
                                           }
-                                          else{
-                                                 // printf("La fonction de nom %s n'existe pas dans le contexte global, on l'ajoute!\n",$2); 
-                                                 ajouterEntree((yyvsp[-4].stringVal), _context, T_ENT, adresse_glob++, param); 
-                                          }
-                                          param=0;
-                                          
+                                          param=0;   
                                    }
-#line 1562 "frag.tab.c"
+#line 1668 "frag.tab.c"
     break;
 
-  case 33:
-#line 176 "frag.y"
-                     {
-                            if(!existe((yyvsp[-1].stringVal))){
-                                   ajouterEntree((yyvsp[-1].stringVal), _context, T_ENT, adresse_loc++, 0);    
-                            }
-                            else{
-                                   printf("\033[31mLa variable %s a déjà été déclarée dans le contexte local\nErreur déclaration de variable ligne %d.\n\033[0m",(yyvsp[-1].stringVal), lineno-1);
-                                   return 0;
-                            }
-                           
-                     }
-#line 1577 "frag.tab.c"
-    break;
-
-  case 35:
-#line 187 "frag.y"
+  case 29:
+#line 283 "frag.y"
                             {      
-                                   tmp = base; 
-                                   base = 0; 
-                                   tmpSommet=sommet; 
-                                   sommet=sommetGlo;
-                                   if(!existe((yyvsp[-4].stringVal))){
-                                          printf("\033[31mLa fonction %s appeler n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",(yyvsp[-4].stringVal), lineno);
+                                   if(verifAppelFunct((yyvsp[-4].stringVal))==0)
                                           return 0;
-                                   }
-                                   base = tmp;
-                                   sommet=tmpSommet;
-                                   // Fonction existe
-                                   if(paramAppel != tsymb[functArgs((yyvsp[-4].stringVal))].complement){
-                                          printf("\033[36mWarning:La fonction %s attend %d paramètres, vous en avez donné %d ligne %d\n\033[0m",(yyvsp[-4].stringVal),tsymb[functArgs((yyvsp[-4].stringVal))].complement,paramAppel,lineno);
-                                   }
+                                   warningParamFunct((yyvsp[-4].stringVal));
                                    paramAppel=0;
                             }
-#line 1599 "frag.tab.c"
+#line 1679 "frag.tab.c"
+    break;
+
+  case 31:
+#line 290 "frag.y"
+                            {
+                                   verifUtilVar((yyvsp[-3].stringVal));
+                                   genCodeAffectation((yyvsp[-3].stringVal));
+                            }
+#line 1688 "frag.tab.c"
     break;
 
   case 37:
-#line 205 "frag.y"
-                            {
-                                   if(!existe((yyvsp[-3].stringVal))){
-                                          tmp = base; 
-                                          base = 0; 
-                                          tmpSommet=sommet; 
-                                          sommet=sommetGlo;
-                                          if(!existe((yyvsp[-3].stringVal))){
-                                                 printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",(yyvsp[-3].stringVal),lineno-1);
-                                                 return 0;
-                                          }
-                                          base = tmp;
-                                          sommet=tmpSommet;
-                                   }
-                            }
-#line 1618 "frag.tab.c"
+#line 301 "frag.y"
+                                         {_contextTmp=_context;adresse_loc=tmp; }
+#line 1694 "frag.tab.c"
     break;
 
-  case 43:
-#line 226 "frag.y"
-                                        { adresse_loc=tmp; }
-#line 1624 "frag.tab.c"
+  case 39:
+#line 302 "frag.y"
+                                        {adresse_loc=tmp;}
+#line 1700 "frag.tab.c"
     break;
 
-  case 45:
-#line 227 "frag.y"
-                                        { adresse_loc=tmp; }
-#line 1630 "frag.tab.c"
+  case 40:
+#line 302 "frag.y"
+                                                                     {_contextTmp=_context;adresse_loc=tmp;}
+#line 1706 "frag.tab.c"
     break;
 
-  case 47:
-#line 230 "frag.y"
-           {_context=C_LOC; base=sommet; tmp=adresse_loc; adresse_loc=0;  }
-#line 1636 "frag.tab.c"
+  case 42:
+#line 305 "frag.y"
+           { tmp=adresse_loc; adresse_loc=0;  }
+#line 1712 "frag.tab.c"
+    break;
+
+  case 44:
+#line 308 "frag.y"
+               {_context=C_LOC;}
+#line 1718 "frag.tab.c"
+    break;
+
+  case 48:
+#line 321 "frag.y"
+                          {sommetGlo=sommet;}
+#line 1724 "frag.tab.c"
     break;
 
   case 49:
-#line 233 "frag.y"
-               {_context=C_LOC;}
-#line 1642 "frag.tab.c"
+#line 321 "frag.y"
+                                                   {base=0; adresse_loc=tmp; }
+#line 1730 "frag.tab.c"
+    break;
+
+  case 52:
+#line 326 "frag.y"
+                        {_context=C_LOC; base=sommet; adresse_loc=0;}
+#line 1736 "frag.tab.c"
     break;
 
   case 53:
-#line 247 "frag.y"
-                          {sommetGlo=sommet;}
-#line 1648 "frag.tab.c"
+#line 326 "frag.y"
+                                                                                       {warningDefFunct((yyvsp[-4].stringVal));}
+#line 1742 "frag.tab.c"
     break;
 
-  case 54:
-#line 247 "frag.y"
-                                                   {_context=C_GLO; base=0; adresse_loc=tmp; }
-#line 1654 "frag.tab.c"
+  case 56:
+#line 330 "frag.y"
+                             {genCodeENT((yyvsp[0].intVal));}
+#line 1748 "frag.tab.c"
     break;
 
   case 57:
-#line 251 "frag.y"
-                        {_context=C_LOC; base=sommet; adresse_loc=0;}
-#line 1660 "frag.tab.c"
+#line 331 "frag.y"
+               {
+                     if(verifUtilVarlocal((yyvsp[0].stringVal))==0)
+                            return 0; 
+                     genCodeID((yyvsp[0].stringVal));
+              }
+#line 1758 "frag.tab.c"
     break;
 
   case 58:
-#line 251 "frag.y"
-                                                                                       {      
-                                   tmp = base; 
-                                   base = 0; 
-                                   tmpSommet=sommet; 
-                                   sommet=sommetGlo;
-                                   if(!existe((yyvsp[-4].stringVal))){
-                                          printf("\033[36mWarning: La fonction %s que vous avez définit à la ligne %d n'est pas déclarée\n\033[0m",(yyvsp[-4].stringVal), lineno);
-                                   }
-                                   base = tmp;
-                                   sommet=tmpSommet;
+#line 337 "frag.y"
+                            {
+                                   verifAppelFunct((yyvsp[-3].stringVal));
                             }
-#line 1676 "frag.tab.c"
+#line 1766 "frag.tab.c"
+    break;
+
+  case 60:
+#line 341 "frag.y"
+                           {
+                               genCodeNot();   
+                            }
+#line 1774 "frag.tab.c"
+    break;
+
+  case 61:
+#line 346 "frag.y"
+                                                       {genCodeOP((yyvsp[-1].stringVal));}
+#line 1780 "frag.tab.c"
     break;
 
   case 62:
-#line 266 "frag.y"
-               {
-                     if(!existe((yyvsp[0].stringVal))){
-                            // printf("La variable %s n'est pas déclarée localement !\n", $1);
-                            tmp = base; 
-                            base = 0; 
-                            tmpSommet=sommet; 
-                            sommet=sommetGlo;
-                            if(!existe((yyvsp[0].stringVal))){
-                                   printf("\033[31mLa variable %s n'est pas déclarée !\nErreur d'utilisation de variable non déclarée ligne %d\n\033[0m",(yyvsp[0].stringVal),lineno);
-                                   base = tmp;
-                                   sommet=tmpSommet;
-                                   return 0;
-                                   
-                            }
-                     }
-              }
-#line 1697 "frag.tab.c"
+#line 347 "frag.y"
+                                                       {genCodeOP((yyvsp[-1].stringVal));}
+#line 1786 "frag.tab.c"
     break;
 
   case 63:
-#line 283 "frag.y"
-                            {
-                                   tmp = base; 
-                                   base = 0; 
-                                   tmpSommet=sommet; 
-                                   sommet=sommetGlo;
-                                   if(!existe((yyvsp[-3].stringVal))){
-                                          printf("\033[31mLa fonction %s n'est pas déclarée !\nErreur d'utilisation de fonction non déclarée ligne %d.\n\033[0m",(yyvsp[-3].stringVal), lineno-1);
-                                          base = tmp;
-                                          sommet=tmpSommet;
-                                          return 0;
-                                   }
-                            }
-#line 1714 "frag.tab.c"
+#line 348 "frag.y"
+                                                       {genCodeOP((yyvsp[-1].stringVal));}
+#line 1792 "frag.tab.c"
+    break;
+
+  case 69:
+#line 354 "frag.y"
+                                                        {genCodeOP((yyvsp[-1].stringVal));}
+#line 1798 "frag.tab.c"
+    break;
+
+  case 70:
+#line 355 "frag.y"
+                                                        {genCodeOP((yyvsp[-1].stringVal));}
+#line 1804 "frag.tab.c"
     break;
 
 
-#line 1718 "frag.tab.c"
+#line 1808 "frag.tab.c"
 
       default: break;
     }
@@ -1946,9 +2036,9 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 312 "frag.y"
+#line 359 "frag.y"
 
 int yyerror(void)
 { 
-       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction à la ligne 38 ou dans un bloc précédant cette dernière %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno); return 1;
+       printf("\033[31mErreur de syntaxe\nIndications de debugage:\n- Vous avez peut-être oublié \';\' à une instruction à la ligne %d ou dans un bloc précédant cette dernière %d\n- Symbole incorrecte à la ligne %d ou dans le bloc précédant la ligne %d\n\033[0m",lineno,lineno,lineno,lineno); return 1;
 }

@@ -83,7 +83,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 58 "frag.y"
+#line 199 "frag.y"
 
         int intVal; 
         char* stringVal;    
